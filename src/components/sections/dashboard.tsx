@@ -4,7 +4,7 @@
 import React, { useState } from "react"
 import { Bar, BarChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend, Cell } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Dog, Siren, Calendar as CalendarIcon, Home } from "lucide-react"
+import { Users, Dog, Siren, Calendar as CalendarIcon, Home, CheckCircle } from "lucide-react"
 import { Button } from "../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Calendar } from "../ui/calendar"
@@ -15,8 +15,8 @@ const kpiData = [
   { title: "Animales Registrados", value: "850", icon: Dog, color: "text-blue-400" },
   { title: "Usuarios Activos", value: "350", icon: Users, color: "text-green-400" },
   { title: "Denuncias Pendientes", value: "15", icon: Siren, color: "text-yellow-400" },
+  { title: "Denuncias Resueltas", value: "128", icon: CheckCircle, color: "text-green-500" },
   { title: "Turnos Programados", value: "42", icon: CalendarIcon, color: "text-purple-400" },
-  { title: "En Adopción", value: "28", icon: Home, color: "text-pink-400" },
 ]
 
 const barChartData = [

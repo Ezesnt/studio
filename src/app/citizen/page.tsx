@@ -2,7 +2,8 @@
 "use client"
 
 import React, { useState, type ReactNode } from "react"
-import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog, Home } from "lucide-react"
+import Image from "next/image"
+import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog, Home, CheckCircle, ShieldCheck, Syringe } from "lucide-react"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { CitizenSidebar } from "@/components/app/citizen-sidebar"
 import {
@@ -77,12 +78,105 @@ const getStatusVariant = (status: string) => {
   }
 }
 
+const infoData = [
+  {
+    title: "Plan de Vacunación en Cachorros Caninos",
+    icon: Syringe,
+    image: {
+      src: "https://placehold.co/600x400.png",
+      alt: "Cachorro recibiendo vacuna",
+      hint: "puppy vaccine"
+    },
+    description: [
+      "La vacunación preventiva ayuda a proteger a tu cachorro perruno de muchas enfermedades mortales.",
+      "A partir de los 45 días de vida, debe empezar su plan de vacunación.",
+      "Consta de 3 dosis de vacuna quíntuple (Distemper (moquillo), Parvovirosis, Leptospirosis, Parainfluenza, Adenovirus). Una dosis cada 3 semanas. Y al finalizar este plan se recomienda aplicar la vacuna antirrábica.",
+      "¡No lo lleves a la calle, plaza, playa, etc, hasta no tener su plan de vacunación COMPLETO!"
+    ]
+  },
+  {
+    title: "La Rabia",
+    icon: ShieldCheck,
+    image: {
+      src: "https://placehold.co/600x400.png",
+      alt: "Veterinario aplicando vacuna antirrábica",
+      hint: "dog rabies vaccine"
+    },
+    description: [
+      "LA RABIA es una enfermedad mortal que se transmite de los animales al humano por mordeduras o arañazos.",
+      "La forma de contagio es principalmente a través de los murciélagos a felinos y canes.",
+      "Para evitar el contagio vacuna anualmente a tus animales de compañía de más de 3 meses de edad.",
+      "Es obligatorio por Ley Nac. Nº22.953.",
+      "Consultá donde estamos vacunando cada semana en nuestras redes sociales."
+    ]
+  },
+  {
+    title: "Plan de Vacunación en Adultos Caninos",
+    icon: Syringe,
+    image: {
+      src: "https://placehold.co/600x400.png",
+      alt: "Perro adulto siendo vacunado",
+      hint: "adult dog vaccine"
+    },
+    description: [
+      "La vacunación preventiva ayuda a proteger a tu perro adulto de muchas enfermedades mortales.",
+      "Se debe vacunar con 1 dosis de vacuna séxtuple (moquillo, coronavirus, leptospirosis, parainfluenza, tos de la perrera y hepatitis) y 1 dosis de vacuna antirrábica.",
+      "Estas vacunas se renuevan todos los años, durante toda la vida del animal.",
+      "La vacunación ayuda a PREVENIR. Recordá mirar periódicamente el carnet de vacuna de tu perro."
+    ]
+  }
+];
+
+function InfoDashboardSection() {
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Dashboard de Información</h1>
+      <p className="text-muted-foreground">
+        Bienvenido a tu portal de ciudadano. Aquí encontrarás información importante para el cuidado de tus animales de compañía.
+      </p>
+      <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1">
+        {infoData.map((item, index) => (
+          <Card key={index} className="overflow-hidden">
+            <div className="grid md:grid-cols-2">
+              <div className="p-6">
+                <CardHeader className="p-0 mb-4">
+                  <CardTitle className="flex items-center gap-3">
+                    <item.icon className="h-6 w-6 text-primary" />
+                    <span>{item.title}</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 space-y-2 text-muted-foreground">
+                  {item.description.map((p, i) => <p key={i}>{p}</p>)}
+                </CardContent>
+              </div>
+              <div className="flex items-center justify-center bg-muted">
+                <Image
+                  src={item.image.src}
+                  alt={item.image.alt}
+                  width={600}
+                  height={400}
+                  className="object-cover w-full h-full"
+                  data-ai-hint={item.image.hint}
+                />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 function ProfileSection({ onFormOpen }: { onFormOpen: (formId: string, item: any) => void }) {
   return (
     <div className="space-y-4">
       <h1 className="flex items-center gap-3"><UserCog /> Mis Datos</h1>
       <Card>
-        <CardContent className="pt-6 space-y-2">
+        <CardHeader>
+          <CardTitle>Información Personal</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-2 space-y-2">
           <p><strong>Nombre:</strong> {userInfo.nombre} {userInfo.apellido}</p>
           <p><strong>DNI:</strong> {userInfo.dni}</p>
           <p><strong>Email:</strong> {userInfo.email}</p>
@@ -332,7 +426,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onNavigate('dashboard')}>
+            <DropdownMenuItem onClick={() => onNavigate('perfil')}>
               <User className="mr-2 h-4 w-4" />
               <span>Ver Perfil</span>
             </DropdownMenuItem>
@@ -395,6 +489,8 @@ export default function CitizenPage() {
   const renderSection = (): ReactNode => {
     switch (activeSection) {
       case "dashboard":
+        return <InfoDashboardSection />
+      case "perfil":
         return <ProfileSection onFormOpen={handleFormOpen} />
       case "preturnos":
         return <PreturnosSection onFormOpen={handleFormOpen} />
@@ -407,7 +503,7 @@ export default function CitizenPage() {
       case "notificaciones":
         return <NotificacionesSection />
       default:
-        return <ProfileSection onFormOpen={handleFormOpen} />
+        return <InfoDashboardSection />
     }
   }
 
@@ -435,5 +531,3 @@ export default function CitizenPage() {
     </SidebarProvider>
   )
 }
-
-    

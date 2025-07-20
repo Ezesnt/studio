@@ -9,6 +9,7 @@ import {
   Bell,
   UserCog,
   Home,
+  LayoutDashboard,
 } from "lucide-react"
 
 import {
@@ -30,7 +31,8 @@ interface CitizenSidebarProps {
 }
 
 const navItems = [
-  { id: "dashboard", label: "Mi Perfil", icon: UserCog },
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { id: "perfil", label: "Mi Perfil", icon: UserCog },
   { id: "preturnos", label: "Pre-turnos", icon: Clock },
   { id: "animales", label: "Mis Animales", icon: Dog },
   { id: "denuncias", label: "Denuncias", icon: Siren },
@@ -83,5 +85,3 @@ export function CitizenSidebar({ activeSection, setActiveSection }: CitizenSideb
     </Sidebar>
   )
 }
-
-    
