@@ -10,6 +10,7 @@ import {
   UserCog,
   Heart,
   LayoutDashboard,
+  PanelLeft,
 } from "lucide-react"
 
 import {
@@ -62,7 +63,9 @@ export function CitizenSidebar({ activeSection, setActiveSection }: CitizenSideb
         </div>
         <div className="group-data-[collapsible=icon]:hidden">
           <SidebarTrigger asChild>
-             <Button variant="ghost" size="icon" />
+             <Button variant="ghost" size="icon">
+                <PanelLeft />
+             </Button>
           </SidebarTrigger>
         </div>
       </SidebarHeader>

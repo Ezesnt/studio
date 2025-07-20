@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from "react"
@@ -8,6 +9,7 @@ import {
   Home,
   LayoutDashboard,
   Map,
+  PanelLeft,
   Siren,
   Users,
 } from "lucide-react"
@@ -63,7 +65,9 @@ export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps)
         </div>
         <div className="group-data-[collapsible=icon]:hidden">
           <SidebarTrigger asChild>
-             <Button variant="ghost" size="icon" />
+             <Button variant="ghost" size="icon">
+                <PanelLeft />
+             </Button>
           </SidebarTrigger>
         </div>
       </SidebarHeader>
