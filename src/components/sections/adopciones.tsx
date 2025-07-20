@@ -68,38 +68,40 @@ export default function AdopcionesSection() {
       </div>
 
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Especie</TableHead>
-              <TableHead>Edad</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {adopciones.map((adopcion) => (
-              <TableRow key={adopcion.id}>
-                <TableCell>{adopcion.name}</TableCell>
-                <TableCell>{adopcion.species}</TableCell>
-                <TableCell>{adopcion.age}</TableCell>
-                <TableCell>
-                  <Badge variant={getStatusVariant(adopcion.status)} className={adopcion.status === 'Disponible' ? 'bg-green-600' : ''}>{adopcion.status}</Badge>
-                </TableCell>
-                <TableCell className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAdoptionForm', adopcion)}>Editar</Button>
-                  <Button size="sm" variant="destructive" onClick={() => handleFormOpen('endAdoptionForm', adopcion)}>Eliminar</Button>
-                  {adopcion.status === "Disponible" ? (
-                    <Button size="sm">Publicar</Button>
-                  ) : (
-                    <Button size="sm" variant="secondary" disabled>Publicado</Button>
-                  )}
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Especie</TableHead>
+                <TableHead>Edad</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {adopciones.map((adopcion) => (
+                <TableRow key={adopcion.id}>
+                  <TableCell>{adopcion.name}</TableCell>
+                  <TableCell>{adopcion.species}</TableCell>
+                  <TableCell>{adopcion.age}</TableCell>
+                  <TableCell>
+                    <Badge variant={getStatusVariant(adopcion.status)} className={adopcion.status === 'Disponible' ? 'bg-green-600' : ''}>{adopcion.status}</Badge>
+                  </TableCell>
+                  <TableCell className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAdoptionForm', adopcion)}>Editar</Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleFormOpen('endAdoptionForm', adopcion)}>Eliminar</Button>
+                    {adopcion.status === "Disponible" ? (
+                      <Button size="sm">Publicar</Button>
+                    ) : (
+                      <Button size="sm" variant="secondary" disabled>Publicado</Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <DynamicForm 
         formConfig={activeForm}

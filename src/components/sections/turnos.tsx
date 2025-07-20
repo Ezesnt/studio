@@ -82,7 +82,7 @@ export default function TurnosSection({ initialFilter }: TurnosSectionProps) {
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🕒 Turnos</h1>
 
-      <div className="flex gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
           <Input
             type="text"
             placeholder="Buscar turno por usuario..."
@@ -92,7 +92,7 @@ export default function TurnosSection({ initialFilter }: TurnosSectionProps) {
           />
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="w-full md:w-auto">
                   Filtrar
                 </Button>
               </CollapsibleTrigger>
@@ -133,38 +133,40 @@ export default function TurnosSection({ initialFilter }: TurnosSectionProps) {
       </div>
 
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Usuario</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Fecha</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredTurnos.map((turno) => (
-              <TableRow key={turno.id}>
-                <TableCell>{turno.usuario}</TableCell>
-                <TableCell>
-                  <Badge variant={getStatusVariant(turno.estado)} className={turno.estado === 'Confirmado' ? 'bg-green-600' : ''}>{turno.estado}</Badge>
-                </TableCell>
-                <TableCell>{turno.fecha}</TableCell>
-                <TableCell className="flex flex-wrap gap-2">
-                  {turno.estado === "Pendiente" && (
-                    <>
-                      <Button size="sm" onClick={() => handleFormOpen('confirmAppointmentForm', turno)}>Confirmar</Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleFormOpen('cancelAppointmentForm', turno)}>Cancelar</Button>
-                    </>
-                  )}
-                  {turno.estado === "Confirmado" && (
-                    <Button size="sm" variant="destructive" onClick={() => handleFormOpen('cancelAppointmentForm', turno)}>Cancelar</Button>
-                  )}
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Usuario</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Fecha</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredTurnos.map((turno) => (
+                <TableRow key={turno.id}>
+                  <TableCell>{turno.usuario}</TableCell>
+                  <TableCell>
+                    <Badge variant={getStatusVariant(turno.estado)} className={turno.estado === 'Confirmado' ? 'bg-green-600' : ''}>{turno.estado}</Badge>
+                  </TableCell>
+                  <TableCell>{turno.fecha}</TableCell>
+                  <TableCell className="flex flex-wrap gap-2">
+                    {turno.estado === "Pendiente" && (
+                      <>
+                        <Button size="sm" onClick={() => handleFormOpen('confirmAppointmentForm', turno)}>Confirmar</Button>
+                        <Button size="sm" variant="destructive" onClick={() => handleFormOpen('cancelAppointmentForm', turno)}>Cancelar</Button>
+                      </>
+                    )}
+                    {turno.estado === "Confirmado" && (
+                      <Button size="sm" variant="destructive" onClick={() => handleFormOpen('cancelAppointmentForm', turno)}>Cancelar</Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
 
       <DynamicForm 

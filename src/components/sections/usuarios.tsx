@@ -60,7 +60,7 @@ export default function UsuariosSection({ onNavigateToSection }: UsuariosSection
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">👤 Usuarios</h1>
       
-      <div className="flex gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
         <Input
           type="text"
           placeholder="Buscar usuario por nombre, DNI, etc..."
@@ -68,7 +68,7 @@ export default function UsuariosSection({ onNavigateToSection }: UsuariosSection
         />
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
           <CollapsibleTrigger asChild>
-            <Button variant="outline">
+            <Button variant="outline" className="w-full md:w-auto">
               Filtrar
             </Button>
           </CollapsibleTrigger>
@@ -117,36 +117,38 @@ export default function UsuariosSection({ onNavigateToSection }: UsuariosSection
       </div>
       
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>DNI</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.dni}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>
-                  <Badge variant={user.status === "Activo" ? "default" : "destructive"} className={user.status === "Activo" ? "bg-green-600" : ""}>{user.status}</Badge>
-                </TableCell>
-                <TableCell className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('editUserForm', user)}>Editar</Button>
-                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('toggleUserStatusForm', user)}>Activar/Desactivar</Button>
-                  <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('animales', { type: 'owner', value: user.name })}>Animales</Button>
-                  <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('turnos', { type: 'usuario', value: user.name })}>Turnos</Button>
-                  <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('denuncias', { type: 'denunciante', value: user.name })}>Denuncias</Button>
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nombre</TableHead>
+                <TableHead>DNI</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.dni}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Badge variant={user.status === "Activo" ? "default" : "destructive"} className={user.status === "Activo" ? "bg-green-600" : ""}>{user.status}</Badge>
+                  </TableCell>
+                  <TableCell className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('editUserForm', user)}>Editar</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('toggleUserStatusForm', user)}>Activar/Desactivar</Button>
+                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('animales', { type: 'owner', value: user.name })}>Animales</Button>
+                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('turnos', { type: 'usuario', value: user.name })}>Turnos</Button>
+                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('denuncias', { type: 'denunciante', value: user.name })}>Denuncias</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       
       <DynamicForm 

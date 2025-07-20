@@ -80,8 +80,7 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🚨 Denuncias</h1>
       
-      <div className="flex items-center justify-between">
-          <div className="flex gap-2 flex-grow">
+      <div className="flex flex-col md:flex-row gap-2">
             <Input 
               type="text" 
               placeholder="Buscar por denunciante..." 
@@ -91,7 +90,7 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
             />
             <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="w-full md:w-auto">
                   Filtrar
                 </Button>
               </CollapsibleTrigger>
@@ -125,38 +124,39 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
                 </Card>
               </CollapsibleContent>
             </Collapsible>
-          </div>
       </div>
 
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Denunciante</TableHead>
-              <TableHead>Ubicación</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredDenuncias.map((denuncia) => (
-              <TableRow key={denuncia.id}>
-                <TableCell>{denuncia.id}</TableCell>
-                <TableCell>{denuncia.denunciante}</TableCell>
-                <TableCell>{denuncia.ubicacion}</TableCell>
-                <TableCell>
-                  <Badge variant={getStatusVariant(denuncia.estado)} className={denuncia.estado === 'Resuelto' ? 'bg-green-600' : ''}>{denuncia.estado}</Badge>
-                </TableCell>
-                <TableCell className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
-                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
-                  <Button size="sm" variant="ghost">Archivos</Button>
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Denunciante</TableHead>
+                <TableHead>Ubicación</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredDenuncias.map((denuncia) => (
+                <TableRow key={denuncia.id}>
+                  <TableCell>{denuncia.id}</TableCell>
+                  <TableCell>{denuncia.denunciante}</TableCell>
+                  <TableCell>{denuncia.ubicacion}</TableCell>
+                  <TableCell>
+                    <Badge variant={getStatusVariant(denuncia.estado)} className={denuncia.estado === 'Resuelto' ? 'bg-green-600' : ''}>{denuncia.estado}</Badge>
+                  </TableCell>
+                  <TableCell className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
+                    <Button size="sm" variant="ghost">Archivos</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
        <DynamicForm 
         formConfig={activeForm}
