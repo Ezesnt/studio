@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { FaqBot } from "@/components/app/faq-bot"
 import { citizenFaqs } from "@/lib/faq-data"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const userInfo = {
     "activo": true,
@@ -369,10 +370,14 @@ function DenunciasSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
 
 function AdopcionesSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
   const [filterText, setFilterText] = useState("");
-  const filteredAdoptions = adopciones.filter(adopcion =>
-      adopcion.nombre.toLowerCase().includes(filterText.toLowerCase()) ||
-      adopcion.especie.toLowerCase().includes(filterText.toLowerCase())
-  );
+  const [speciesFilter, setSpeciesFilter] = useState("todas");
+
+  const filteredAdoptions = adopciones.filter(adopcion => {
+      const matchesText = adopcion.nombre.toLowerCase().includes(filterText.toLowerCase()) ||
+                          adopcion.especie.toLowerCase().includes(filterText.toLowerCase());
+      const matchesSpecies = speciesFilter === 'todas' || adopcion.especie.toLowerCase() === speciesFilter;
+      return matchesText && matchesSpecies;
+  });
 
   const handleContact = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -389,6 +394,16 @@ function AdopcionesSection({ onFormOpen }: { onFormOpen: (formId: string, item?:
                   value={filterText}
                   onChange={(e) => setFilterText(e.target.value)}
               />
+              <Select value={speciesFilter} onValueChange={setSpeciesFilter}>
+                <SelectTrigger className="w-full md:w-[180px]">
+                  <SelectValue placeholder="Filtrar por especie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas las especies</SelectItem>
+                  <SelectItem value="perro">Perros</SelectItem>
+                  <SelectItem value="gato">Gatos</SelectItem>
+                </SelectContent>
+              </Select>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredAdoptions.map((adopcion) => (
@@ -576,5 +591,3 @@ export default function CitizenPage() {
     </SidebarProvider>
   )
 }
-
-    
