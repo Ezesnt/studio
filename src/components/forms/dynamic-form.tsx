@@ -288,11 +288,15 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
       </Dialog>
     );
   }
+  
+  const readOnlyForms = ['viewComplaintDetailsForm', 'viewAnimalDetailsForm'];
+  const isReadOnlyForm = readOnlyForms.includes(formConfig.id);
+
 
   const renderField = (fieldConfig: FormFieldConfig, formField: any) => {
     const { name, label, type, placeholder, options, required, omitInView } = fieldConfig;
-    const isReadOnly = formConfig.id === 'viewComplaintDetailsForm'
-    if (isReadOnly && omitInView) return null;
+    
+    if (isReadOnlyForm && omitInView) return null;
     
     const fieldLabel = required ? `${label} *` : label;
     
@@ -306,7 +310,7 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
         <FormControl>
           <>
             {type === "select" && options ? (
-              <Select onValueChange={formField.onChange} defaultValue={formField.value} disabled={isReadOnly}>
+              <Select onValueChange={formField.onChange} defaultValue={formField.value} disabled={isReadOnlyForm}>
                 <SelectTrigger>
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
@@ -325,14 +329,14 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                 onChange={formField.onChange}
                 placeholder={placeholder}
                 searchPlaceholder="Buscar..."
-                disabled={isReadOnly}
+                disabled={isReadOnlyForm}
               />
             ) : type === "checkbox" ? (
               <div className="flex items-center space-x-2">
                 <Checkbox
                   checked={formField.value}
                   onCheckedChange={formField.onChange}
-                  disabled={isReadOnly}
+                  disabled={isReadOnlyForm}
                 />
                  <label
                   htmlFor={name}
@@ -342,9 +346,9 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                 </label>
               </div>
             ) : type === "textarea" ? (
-              <Textarea placeholder={placeholder} {...formField} readOnly={isReadOnly} />
+              <Textarea placeholder={placeholder} {...formField} readOnly={isReadOnlyForm} />
             ) : (
-              <Input type={type} placeholder={placeholder} {...formField} value={formField.value || ''} readOnly={isReadOnly} />
+              <Input type={type} placeholder={placeholder} {...formField} value={formField.value || ''} readOnly={isReadOnlyForm} />
             )}
           </>
         </FormControl>
@@ -361,8 +365,6 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
     })
     onClose();
   }
-
-  const isReadOnlyForm = formConfig.id === 'viewComplaintDetailsForm';
 
   const renderAttachments = () => {
     if (formConfig.id === 'viewComplaintDetailsForm' && item?.archivos?.length > 0) {
