@@ -68,7 +68,7 @@ export const formMappings = {
         "title": "Asignar/Cambiar Propietario",
         "endpoint": "PUT /adopciones/actualizar/:id",
         "fields": [
-          { "name": "id_propietario", "label": "ID del Usuario Propietario", "type": "number", "placeholder": "Introduce el ID numérico del usuario", "required": true }
+          { "name": "id_propietario", "label": "Propietario", "type": "select", "placeholder": "Selecciona un propietario", "required": true, "options": [{ "value": "1", "text": "Maria Lopez" }, { "value": "2", "text": "Juan Martínez" }] }
         ]
       },
       {
@@ -158,12 +158,13 @@ export const formMappings = {
         "triggerButtonLabel": "Detalle",
         "title": "Detalle de la Denuncia",
         "fields": [
-          { "name": "id", "label": "ID Denuncia", "type": "text" },
-          { "name": "denunciante", "label": "Denunciante", "type": "text" },
-          { "name": "ubicacion", "label": "Ubicación", "type": "text" },
-          { "name": "tipo", "label": "Tipo de denuncia", "type": "text" },
-          { "name": "descripcion", "label": "Descripción", "type": "textarea" },
-          { "name": "estado", "label": "Estado", "type": "text" }
+          { "name": "tipo_denuncia", "label": "Tipo de denuncia", "type": "text", "omitInView": false },
+          { "name": "fecha", "label": "Fecha", "type": "text", "omitInView": false },
+          { "name": "ubicacion", "label": "Ubicación", "type": "text", "omitInView": false },
+          { "name": "barrio", "label": "Barrio", "type": "text", "omitInView": false },
+          { "name": "descripcion", "label": "Descripción", "type": "textarea", "omitInView": false },
+          { "name": "estado", "label": "Estado", "type": "text", "omitInView": false },
+          { "name": "archivos", "label": "Archivos", "type": "text", "omitInView": true }
         ]
       },
       {

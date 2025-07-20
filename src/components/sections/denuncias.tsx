@@ -30,9 +30,26 @@ import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
 
 const denuncias = [
-  { id: "456", denunciante: "Pedro Díaz", ubicacion: "Centro", estado: "Pendiente", descripcion: "Perro en mal estado en la calle principal.", tipo: "maltrato" },
-  { id: "457", denunciante: "Ana Ruiz", ubicacion: "Sur", estado: "Resuelto", descripcion: "Gato abandonado en un parque.", tipo: "abandono" },
-  { id: "458", denunciante: "Maria Lopez", ubicacion: "Norte", estado: "En Proceso", descripcion: "Venta ilegal de animales exóticos.", tipo: "venta_ilegal" },
+  { id: "456", denunciante: "Pedro Díaz", ubicacion: "Centro", estado: "Pendiente", descripcion: "Perro en mal estado en la calle principal.", tipo: "maltrato", archivos: [
+        {
+            "id": 1,
+            "id_denuncia": 1,
+            "nombre_archivo": "denuncias/2/1/foto_perro_maltratado.jpg",
+            "ruta_archivo": "https://placehold.co/600x400.png"
+        },
+        {
+            "id": 2,
+            "id_denuncia": 1,
+            "nombre_archivo": "denuncias/2/1/reporte_veterinario.pdf",
+            "ruta_archivo": "https://placehold.co/600x400.png"
+        }
+    ],
+    barrio: "Centro",
+    fecha: "2025-07-18T06:39:31.261229",
+    tipo_denuncia: "maltrato_animal",
+  },
+  { id: "457", denunciante: "Ana Ruiz", ubicacion: "Sur", estado: "Resuelto", descripcion: "Gato abandonado en un parque.", tipo: "abandono", archivos: [], tipo_denuncia: "abandono", fecha: "2025-07-19T08:00:00" },
+  { id: "458", denunciante: "Maria Lopez", ubicacion: "Norte", estado: "En Proceso", descripcion: "Venta ilegal de animales exóticos.", tipo: "venta_ilegal", archivos: [], tipo_denuncia: "venta_ilegal", fecha: "2025-07-20T12:30:00" },
 ]
 
 const getStatusVariant = (status: string) => {
@@ -150,7 +167,6 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
                   <TableCell className="flex flex-wrap gap-2">
                     <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
                     <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
-                    <Button size="sm" variant="ghost">Archivos</Button>
                   </TableCell>
                 </TableRow>
               ))}

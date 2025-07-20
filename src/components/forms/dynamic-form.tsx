@@ -35,7 +35,7 @@ import { useToast } from "@/hooks/use-toast"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
-import { Calendar, Syringe } from "lucide-react"
+import { Calendar, Syringe, Paperclip, FileText, Image as ImageIcon } from "lucide-react"
 
 export interface FormFieldConfig {
   name: string
@@ -55,6 +55,7 @@ export interface FormFieldConfig {
   required?: boolean
   options?: { value: string; text: string }[]
   value?: any
+  omitInView?: boolean
 }
 
 export interface FormConfig {
@@ -70,6 +71,17 @@ interface DynamicFormProps {
   isOpen: boolean
   onClose: () => void
   item?: any
+}
+
+function getFileIcon(fileName: string) {
+    const extension = fileName.split('.').pop()?.toLowerCase();
+    if (['jpg', 'jpeg', 'png', 'gif'].includes(extension || '')) {
+        return <ImageIcon className="h-4 w-4" />;
+    }
+    if (extension === 'pdf') {
+        return <FileText className="h-4 w-4" />;
+    }
+    return <Paperclip className="h-4 w-4" />;
 }
 
 export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormProps) {
@@ -205,8 +217,10 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
   }
 
   const renderField = (fieldConfig: FormFieldConfig, formField: any) => {
-    const { name, label, type, placeholder, options, required } = fieldConfig;
+    const { name, label, type, placeholder, options, required, omitInView } = fieldConfig;
     const isReadOnly = formConfig.id === 'viewAnimalDetailsForm' || formConfig.id === 'viewComplaintDetailsForm' || formConfig.id === 'viewAppointmentDetailsForm';
+    if (isReadOnly && omitInView) return null;
+    
     const fieldLabel = required ? `${label} *` : label;
     
     if (type === 'hidden') {
@@ -268,6 +282,32 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
 
   const isReadOnlyForm = formConfig.id === 'viewAnimalDetailsForm' || formConfig.id === 'viewComplaintDetailsForm' || formConfig.id === 'viewAppointmentDetailsForm';
 
+  const renderAttachments = () => {
+    if (formConfig.id === 'viewComplaintDetailsForm' && item?.archivos?.length > 0) {
+      return (
+        <div className="space-y-2 pt-4">
+          <h3 className="font-semibold text-sm">Archivos adjuntos:</h3>
+          <ul className="space-y-2">
+            {item.archivos.map((archivo: any) => (
+              <li key={archivo.id}>
+                <a
+                  href={archivo.ruta_archivo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-primary hover:underline"
+                >
+                  {getFileIcon(archivo.nombre_archivo)}
+                  <span className="truncate">{archivo.nombre_archivo.split('/').pop()}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+    return null;
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
@@ -299,6 +339,9 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                       render={({ field: formField }) => renderField(field, formField)}
                     />
                 ))}
+
+                {renderAttachments()}
+
                 <DialogFooter className="pt-4">
                   <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
                   {!isReadOnlyForm && <Button type="submit">Guardar</Button>}
