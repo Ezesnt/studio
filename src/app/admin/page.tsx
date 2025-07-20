@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
+import { FaqBot } from "@/components/app/faq-bot"
+import { adminFaqs } from "@/lib/faq-data"
 
 type SectionFilter = {
   type: string;
@@ -137,6 +139,7 @@ export default function AdminPage() {
             {renderSection()}
           </div>
         </main>
+        <FaqBot faqs={adminFaqs} />
       </div>
     </SidebarProvider>
   )

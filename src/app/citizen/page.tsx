@@ -21,17 +21,19 @@ import { formMappings } from "@/lib/forms-mapping"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { FaqBot } from "@/components/app/faq-bot"
+import { citizenFaqs } from "@/lib/faq-data"
 
 const userInfo = {
     "activo": true,
-    "apellido": "Pérez",
-    "categoria": "ciudadano",
-    "dni": "30555666",
-    "domicilio": "Av. Siempreviva 742",
-    "email": "juanperez@mail.com",
+    "nombre": "Matias",
+    "apellido": "Santillan",
+    "categoria": "admin",
+    "dni": "88554321",
+    "domicilio": "Calle Falsa 123",
+    "email": "matias@gmail.com",
     "fecha_registro": "2025-07-13T02:20:29.450823",
     "id": 1,
-    "nombre": "Juan",
     "telefono": "1122334455",
     "barrio": "centro"
 };
@@ -346,6 +348,7 @@ export default function CitizenPage() {
           onClose={handleCloseForm}
           item={selectedItem}
         />
+        <FaqBot faqs={citizenFaqs} />
       </div>
     </SidebarProvider>
   )
