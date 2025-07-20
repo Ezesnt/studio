@@ -20,7 +20,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/colla
 import { Label } from "../ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
-const adopciones = [
+const adopcionesData = [
   { id: 1, name: "Rex", species: "Perro", age: "3 años", status: "Disponible", detalle: "Amigable y juguetón", url: "" },
   { id: 2, name: "Luna", species: "Gato", age: "1 año", status: "Adoptado", detalle: "Le gusta dormir mucho", url: "" },
 ]
@@ -40,6 +40,8 @@ export default function AdopcionesSection() {
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [filterText, setFilterText] = useState("")
+  const [speciesFilter, setSpeciesFilter] = useState("todas")
 
   const handleFormOpen = (formId: string, item?: any) => {
     let formConfig;
@@ -65,6 +67,13 @@ export default function AdopcionesSection() {
     setSelectedItem(null)
   }
 
+  const adopciones = adopcionesData.filter(adopcion => {
+    const matchesText = adopcion.name.toLowerCase().includes(filterText.toLowerCase()) ||
+                        adopcion.species.toLowerCase().includes(filterText.toLowerCase());
+    const matchesSpecies = speciesFilter === 'todas' || adopcion.species.toLowerCase() === speciesFilter;
+    return matchesText && matchesSpecies;
+  });
+
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🏡 Adopciones</h1>
@@ -76,6 +85,8 @@ export default function AdopcionesSection() {
               type="text"
               placeholder="Buscar por nombre, especie..."
               className="flex-grow"
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
             />
             <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
@@ -84,11 +95,11 @@ export default function AdopcionesSection() {
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                  <Card className="absolute mt-2 z-10 w-full md:w-auto">
-                    <form className="p-4 space-y-4">
+                  <Card className="absolute mt-2 z-10 w-full md:w-[200px]">
+                    <div className="p-4 space-y-4">
                         <div>
                           <Label htmlFor="filtroEspecie">Especie</Label>
-                          <Select>
+                          <Select value={speciesFilter} onValueChange={setSpeciesFilter}>
                             <SelectTrigger id="filtroEspecie">
                               <SelectValue placeholder="Todas" />
                             </SelectTrigger>
@@ -100,10 +111,7 @@ export default function AdopcionesSection() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <Button type="submit" className="w-full">
-                            Aplicar filtro
-                        </Button>
-                    </form>
+                    </div>
                 </Card>
               </CollapsibleContent>
             </Collapsible>
@@ -155,5 +163,3 @@ export default function AdopcionesSection() {
     </div>
   )
 }
-
-    
