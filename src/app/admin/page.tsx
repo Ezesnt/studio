@@ -141,7 +141,7 @@ export default function AdminPage() {
           activeSection={activeSection}
           setActiveSection={handleNavigateToSection}
         />
-        <main className="flex-1 flex flex-col bg-background md:rounded-l-2xl md:shadow-2xl">
+        <main className="flex-1 flex flex-col bg-background md:shadow-2xl md:ml-0 md:rounded-l-2xl">
           <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} onNavigate={handleNavigateToSection} />
           <div className="flex-1 p-4 md:p-6 lg:p-8 h-full overflow-y-auto">
             {renderSection()}

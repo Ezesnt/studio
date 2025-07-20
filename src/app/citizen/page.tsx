@@ -26,6 +26,7 @@ import { FaqBot } from "@/components/app/faq-bot"
 import { citizenFaqs } from "@/lib/faq-data"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const userInfo = {
     "activo": true,
@@ -230,11 +231,39 @@ function ProfileSection({ onFormOpen }: { onFormOpen: (formId: string, item: any
 }
 
 function PreturnosSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
-  const getStatusVariant = (status: string) => status === 'Confirmado' ? 'default' : 'secondary'
-  return (
-    <div className="space-y-6">
-      <h1 className="flex items-center gap-3"><Clock /> Pre-turnos</h1>
-      <Button onClick={() => onFormOpen('solicitarPreturnoForm')}>Solicitar Pre-turno</Button>
+  const getStatusVariant = (status: string) => status === 'Confirmado' ? 'default' : 'secondary';
+  const isMobile = useIsMobile();
+  
+  const renderMobilePreturnos = () => (
+     <div className="space-y-4">
+      {preturnos.map(turno => (
+        <Card key={turno.id}>
+          <CardHeader>
+            <CardTitle>Turno ID: {turno.id}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Estado</span>
+              <Badge variant={getStatusVariant(turno.estado)} className={turno.estado === 'Confirmado' ? 'bg-green-600' : ''}>{turno.estado}</Badge>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Fecha Solicitada</span>
+              <span>{turno.fechaSolicitada}</span>
+            </div>
+             <div className="pt-2">
+                {turno.estado === 'Confirmado' ? (
+                  <Button className="w-full" size="sm" onClick={() => onFormOpen('viewAppointmentDetailsForm', turno)}>Ver detalle</Button>
+                ) : (
+                  <Button className="w-full" size="sm" variant="outline" disabled>Esperando confirmación</Button>
+                )}
+             </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderDesktopPreturnos = () => (
       <Card>
         <div className="relative w-full overflow-auto">
           <Table>
@@ -265,29 +294,63 @@ function PreturnosSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
           </Table>
         </div>
       </Card>
+  );
+
+  return (
+    <div className="space-y-6">
+      <h1 className="flex items-center gap-3"><Clock /> Pre-turnos</h1>
+      <Button onClick={() => onFormOpen('solicitarPreturnoForm')}>Solicitar Pre-turno</Button>
+      {isMobile ? renderMobilePreturnos() : renderDesktopPreturnos()}
     </div>
   );
 }
 
 function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
   const [filterText, setFilterText] = useState("");
+  const isMobile = useIsMobile();
   const filteredAnimals = animales.filter(animal =>
     animal.name.toLowerCase().includes(filterText.toLowerCase()) ||
     animal.species.toLowerCase().includes(filterText.toLowerCase())
   );
-  return (
-    <div className="space-y-6">
-      <h1 className="flex items-center gap-3"><Dog /> Mis Animales</h1>
-      <div className="flex flex-col md:flex-row gap-2">
-        <Input 
-          placeholder="Buscar animal por nombre o especie..." 
-          className="flex-grow" 
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-        />
-      </div>
-      <Button onClick={() => onFormOpen('agregarAnimalForm')}>Agregar Animal</Button>
-      <Card>
+  
+  const renderMobileAnimales = () => (
+     <div className="space-y-4">
+      {filteredAnimals.map(animal => (
+        <Card key={animal.id}>
+          <CardHeader>
+             <CardTitle>{animal.name}</CardTitle>
+          </CardHeader>
+           <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Especie</span>
+                <span>{animal.species}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Edad</span>
+                <span>{animal.age}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Patente</span>
+                {animal.patentado ? (
+                   <Badge variant="default" className="bg-green-600 text-center">
+                    Patentado<br/>(Vence: {animal.fecha_vencimiento_patente})
+                   </Badge>
+                ) : (
+                  <Badge variant="secondary">No Patentado</Badge>
+                )}
+              </div>
+              <div className="flex flex-col gap-2 pt-2">
+                <Button size="sm" variant="outline" onClick={() => onFormOpen('viewAnimalHealthBookForm', animal)}>Libreta</Button>
+                <Button size="sm" variant="secondary" onClick={() => onFormOpen('viewAnimalDetailsForm', animal)}>Ver detalle</Button>
+              </div>
+           </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderDesktopAnimales = () => (
+     <Card>
         <div className="relative w-full overflow-auto">
           <Table>
             <TableHeader>
@@ -324,17 +387,64 @@ function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?
           </Table>
         </div>
       </Card>
+  );
+
+  return (
+    <div className="space-y-6">
+      <h1 className="flex items-center gap-3"><Dog /> Mis Animales</h1>
+      <div className="flex flex-col md:flex-row gap-2">
+        <Input 
+          placeholder="Buscar animal por nombre o especie..." 
+          className="flex-grow" 
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+        />
+      </div>
+      <Button onClick={() => onFormOpen('agregarAnimalForm')}>Agregar Animal</Button>
+      {isMobile ? renderMobileAnimales() : renderDesktopAnimales()}
     </div>
   );
 }
 
 function DenunciasSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
-  const getStatusVariant = (status: string) => status === 'Resuelta' ? 'default' : 'destructive'
-  return (
-    <div className="space-y-6">
-      <h1 className="flex items-center gap-3"><Siren /> Denuncias</h1>
-      <Button onClick={() => onFormOpen('agregarDenunciaForm')}>Agregar Denuncia</Button>
-      <Card>
+  const getStatusVariant = (status: string) => status === 'Resuelta' ? 'default' : 'destructive';
+  const isMobile = useIsMobile();
+
+  const renderMobileDenuncias = () => (
+     <div className="space-y-4">
+      {denuncias.map(d => (
+        <Card key={d.id}>
+          <CardHeader>
+            <CardTitle>Denuncia ID: {d.id}</CardTitle>
+          </CardHeader>
+           <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Tipo</span>
+                <span>{d.tipo}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Ubicación</span>
+                <span>{d.direccion}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Fecha</span>
+                <span>{d.fecha}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Estado</span>
+                <Badge variant={getStatusVariant(d.estado)} className={d.estado === 'Resuelta' ? 'bg-green-600' : ''}>{d.estado}</Badge>
+              </div>
+              <div className="pt-2">
+                <Button className="w-full" size="sm" variant="outline" onClick={() => onFormOpen('viewComplaintDetailsForm', d)}>Ver detalle</Button>
+              </div>
+           </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderDesktopDenuncias = () => (
+     <Card>
         <div className="relative w-full overflow-auto">
           <Table>
             <TableHeader>
@@ -364,6 +474,13 @@ function DenunciasSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
           </Table>
         </div>
       </Card>
+  )
+
+  return (
+    <div className="space-y-6">
+      <h1 className="flex items-center gap-3"><Siren /> Denuncias</h1>
+      <Button onClick={() => onFormOpen('agregarDenunciaForm')}>Agregar Denuncia</Button>
+      {isMobile ? renderMobileDenuncias() : renderDesktopDenuncias()}
     </div>
   );
 }

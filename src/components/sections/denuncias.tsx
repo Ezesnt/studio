@@ -17,7 +17,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Card } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -29,6 +29,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const denuncias = [
   { id: "456", denunciante: "Pedro Díaz", ubicacion: "Centro", estado: "Pendiente", descripcion: "Perro en mal estado en la calle principal.", tipo: "maltrato", archivos: [
@@ -76,6 +77,7 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [filterText, setFilterText] = useState(initialFilter?.type === 'denunciante' ? initialFilter.value : '')
+  const isMobile = useIsMobile();
 
   const handleFormOpen = (formId: string, item?: any) => {
     const formConfig = formMappings.denuncias.forms.find(f => f.id === formId)
@@ -93,6 +95,70 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
   const filteredDenuncias = denuncias.filter(denuncia => 
     denuncia.denunciante.toLowerCase().includes(filterText.toLowerCase())
   )
+
+  const renderMobileDenuncias = () => (
+    <div className="space-y-4">
+        {filteredDenuncias.map((denuncia) => (
+          <Card key={denuncia.id}>
+            <CardHeader>
+                <CardTitle>ID: {denuncia.id}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Denunciante</span>
+                  <span>{denuncia.denunciante}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Ubicación</span>
+                  <span>{denuncia.ubicacion}</span>
+                </div>
+                 <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Estado</span>
+                  <Badge variant={getStatusVariant(denuncia.estado)} className={denuncia.estado === 'Resuelto' ? 'bg-green-600' : ''}>{denuncia.estado}</Badge>
+                </div>
+                <div className="flex flex-col gap-2 pt-2">
+                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
+                </div>
+            </CardContent>
+          </Card>
+        ))}
+     </div>
+  );
+
+  const renderDesktopDenuncias = () => (
+    <Card>
+      <div className="relative w-full overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Denunciante</TableHead>
+              <TableHead>Ubicación</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredDenuncias.map((denuncia) => (
+              <TableRow key={denuncia.id}>
+                <TableCell>{denuncia.id}</TableCell>
+                <TableCell>{denuncia.denunciante}</TableCell>
+                <TableCell>{denuncia.ubicacion}</TableCell>
+                <TableCell>
+                  <Badge variant={getStatusVariant(denuncia.estado)} className={denuncia.estado === 'Resuelto' ? 'bg-green-600' : ''}>{denuncia.estado}</Badge>
+                </TableCell>
+                <TableCell className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
+  );
 
   return (
     <div className="space-y-6">
@@ -138,37 +204,8 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
             </Collapsible>
       </div>
 
-      <Card>
-        <div className="relative w-full overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Denunciante</TableHead>
-                <TableHead>Ubicación</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredDenuncias.map((denuncia) => (
-                <TableRow key={denuncia.id}>
-                  <TableCell>{denuncia.id}</TableCell>
-                  <TableCell>{denuncia.denunciante}</TableCell>
-                  <TableCell>{denuncia.ubicacion}</TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusVariant(denuncia.estado)} className={denuncia.estado === 'Resuelto' ? 'bg-green-600' : ''}>{denuncia.estado}</Badge>
-                  </TableCell>
-                  <TableCell className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      {isMobile ? renderMobileDenuncias() : renderDesktopDenuncias()}
+
        <DynamicForm 
         formConfig={activeForm}
         isOpen={!!activeForm}

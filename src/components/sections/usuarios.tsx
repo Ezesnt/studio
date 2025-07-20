@@ -17,7 +17,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Card } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -29,6 +29,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const users = [
   { id: 1, nombre: "Admin", apellido: "User", domicilio: "Admin Street 123", telefono: "555-0100", name: "Admin User", dni: "11111111", email: "admin@zoonosis.com", status: "Activo", categoria: "admin" },
@@ -49,6 +50,7 @@ export default function UsuariosSection({ onNavigateToSection, initialFilter }: 
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [filterText, setFilterText] = useState('')
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (initialFilter?.type === 'id') {
@@ -74,6 +76,76 @@ export default function UsuariosSection({ onNavigateToSection, initialFilter }: 
     user.name.toLowerCase().includes(filterText.toLowerCase()) ||
     user.dni.toLowerCase().includes(filterText.toLowerCase())
   )
+  
+  const renderMobileUsers = () => (
+    <div className="space-y-4">
+      {filteredUsers.map((user) => (
+        <Card key={user.id}>
+            <CardHeader>
+                <CardTitle>{user.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                    <span className="text-muted-foreground">DNI</span>
+                    <span>{user.dni}</span>
+                </div>
+                <div className="flex justify-between text-right">
+                    <span className="text-muted-foreground">Email</span>
+                    <span className="truncate">{user.email}</span>
+                </div>
+                 <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Estado</span>
+                  <Badge variant={user.status === "Activo" ? "default" : "destructive"} className={user.status === "Activo" ? "bg-green-600" : ""}>{user.status}</Badge>
+                </div>
+                <div className="flex flex-col gap-2 pt-2">
+                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('editUserForm', user)}>Editar</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('toggleUserStatusForm', user)}>Activar/Desactivar</Button>
+                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('animales', { type: 'owner', value: user.name })}>Animales</Button>
+                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('turnos', { type: 'usuario', value: user.name })}>Turnos</Button>
+                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('denuncias', { type: 'denunciante', value: user.name })}>Denuncias</Button>
+                </div>
+            </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderDesktopUsers = () => (
+    <Card>
+      <div className="relative w-full overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nombre</TableHead>
+              <TableHead>DNI</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredUsers.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.dni}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>
+                  <Badge variant={user.status === "Activo" ? "default" : "destructive"} className={user.status === "Activo" ? "bg-green-600" : ""}>{user.status}</Badge>
+                </TableCell>
+                <TableCell className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('editUserForm', user)}>Editar</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('toggleUserStatusForm', user)}>Activar/Desactivar</Button>
+                  <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('animales', { type: 'owner', value: user.name })}>Animales</Button>
+                  <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('turnos', { type: 'usuario', value: user.name })}>Turnos</Button>
+                  <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('denuncias', { type: 'denunciante', value: user.name })}>Denuncias</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
+  );
 
   return (
     <div className="space-y-6">
@@ -131,40 +203,7 @@ export default function UsuariosSection({ onNavigateToSection, initialFilter }: 
         </Collapsible>
       </div>
       
-      <Card>
-        <div className="relative w-full overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>DNI</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead>Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.dni}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={user.status === "Activo" ? "default" : "destructive"} className={user.status === "Activo" ? "bg-green-600" : ""}>{user.status}</Badge>
-                  </TableCell>
-                  <TableCell className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('editUserForm', user)}>Editar</Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('toggleUserStatusForm', user)}>Activar/Desactivar</Button>
-                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('animales', { type: 'owner', value: user.name })}>Animales</Button>
-                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('turnos', { type: 'usuario', value: user.name })}>Turnos</Button>
-                    <Button size="sm" variant="ghost" onClick={() => onNavigateToSection('denuncias', { type: 'denunciante', value: user.name })}>Denuncias</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      {isMobile ? renderMobileUsers() : renderDesktopUsers()}
       
       <DynamicForm 
         formConfig={activeForm}

@@ -16,7 +16,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select"
 import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const animals = [
   { id: 1, name: "Firulais", species: "Perro", raza: "Labrador", age: 5, sexo: "macho", color: "Dorado", tamanio: "grande", esta_castrado: true, owner: "Juan Pérez", patent: "12345", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] },
@@ -45,6 +46,7 @@ export default function AnimalesSection({ initialFilter }: AnimalesSectionProps)
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
   const [filterText, setFilterText] = useState(initialFilter?.type === 'owner' ? initialFilter.value : '')
+  const isMobile = useIsMobile();
 
   const handleFormOpen = (formId: string, item?: any) => {
     const formConfig = formMappings.animales.forms.find(f => f.id === formId)
@@ -64,12 +66,84 @@ export default function AnimalesSection({ initialFilter }: AnimalesSectionProps)
     animal.name.toLowerCase().includes(filterText.toLowerCase())
   )
 
+  const renderMobileAnimals = () => (
+     <div className="space-y-4">
+        {filteredAnimals.map((animal) => (
+          <Card key={animal.id}>
+            <CardHeader>
+                <CardTitle>{animal.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Especie</span>
+                  <span>{animal.species}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Propietario</span>
+                  <span>{animal.owner}</span>
+                </div>
+                 <div className="flex justify-between">
+                  <span className="text-muted-foreground">Patente</span>
+                  <span>{animal.patent}</span>
+                </div>
+                <div className="flex flex-col gap-2 pt-2">
+                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAnimalForm', animal)}>Editar</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('patentarAnimalForm', animal)}>Patentar</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('viewAnimalHealthBookForm', animal)}>Ver Libreta</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('addHealthRecordForm', animal)}>Agregar Registro</Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleFormOpen('deactivateAnimalForm', animal)}>Baja</Button>
+                    <Button size="sm" onClick={() => handleFormOpen('activateAnimalForm', animal)}>Alta</Button>
+                    <Button size="sm" variant="ghost" onClick={() => handleFormOpen('assignOwnerForm', animal)}>Propietario</Button>
+                </div>
+            </CardContent>
+          </Card>
+        ))}
+     </div>
+  );
+
+  const renderDesktopAnimals = () => (
+    <Card>
+      <div className="relative w-full overflow-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Especie</TableHead>
+              <TableHead>Propietario</TableHead>
+              <TableHead>Patente</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredAnimals.map((animal) => (
+              <TableRow key={animal.id}>
+                <TableCell>{animal.name}</TableCell>
+                <TableCell>{animal.species}</TableCell>
+                <TableCell>{animal.owner}</TableCell>
+                <TableCell>{animal.patent}</TableCell>
+                <TableCell className="flex flex-wrap gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAnimalForm', animal)}>Editar</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('patentarAnimalForm', animal)}>Patentar</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('viewAnimalHealthBookForm', animal)}>Ver Libreta</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('addHealthRecordForm', animal)}>Agregar Registro</Button>
+                  <Button size="sm" variant="destructive" onClick={() => handleFormOpen('deactivateAnimalForm', animal)}>Baja</Button>
+                  <Button size="sm" onClick={() => handleFormOpen('activateAnimalForm', animal)}>Alta</Button>
+                  <Button size="sm" variant="ghost" onClick={() => handleFormOpen('assignOwnerForm', animal)}>Propietario</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
+  )
+
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🐾 Animales</h1>
 
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex w-full gap-2">
+          <div className="flex w-full flex-col md:flex-row gap-2">
             <Input
               type="text"
               placeholder="Buscar animal por nombre o propietario..."
@@ -79,12 +153,12 @@ export default function AnimalesSection({ initialFilter }: AnimalesSectionProps)
             />
             <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" className="w-full md:w-auto">
                   Filtrar
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                  <Card className="absolute mt-2 z-10">
+                  <Card className="absolute mt-2 z-10 w-full md:w-auto">
                   <CardContent className="pt-6">
                     <form>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -127,43 +201,10 @@ export default function AnimalesSection({ initialFilter }: AnimalesSectionProps)
               </CollapsibleContent>
             </Collapsible>
           </div>
-          <Button onClick={() => handleFormOpen('createAnimalForm')} className="w-full md:w-auto">Crear Animal</Button>
+          <Button onClick={() => handleFormOpen('createAnimalForm')} className="w-full md:w-auto flex-shrink-0">Crear Animal</Button>
       </div>
 
-      <Card>
-        <div className="relative w-full overflow-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nombre</TableHead>
-                <TableHead>Especie</TableHead>
-                <TableHead>Propietario</TableHead>
-                <TableHead>Patente</TableHead>
-                <TableHead>Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredAnimals.map((animal) => (
-                <TableRow key={animal.id}>
-                  <TableCell>{animal.name}</TableCell>
-                  <TableCell>{animal.species}</TableCell>
-                  <TableCell>{animal.owner}</TableCell>
-                  <TableCell>{animal.patent}</TableCell>
-                  <TableCell className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAnimalForm', animal)}>Editar</Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('patentarAnimalForm', animal)}>Patentar</Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('viewAnimalHealthBookForm', animal)}>Ver Libreta</Button>
-                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('addHealthRecordForm', animal)}>Agregar Registro</Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleFormOpen('deactivateAnimalForm', animal)}>Baja</Button>
-                    <Button size="sm" onClick={() => handleFormOpen('activateAnimalForm', animal)}>Alta</Button>
-                    <Button size="sm" variant="ghost" onClick={() => handleFormOpen('assignOwnerForm', animal)}>Propietario</Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </Card>
+      {isMobile ? renderMobileAnimals() : renderDesktopAnimals()}
 
       <DynamicForm 
         formConfig={activeForm}
