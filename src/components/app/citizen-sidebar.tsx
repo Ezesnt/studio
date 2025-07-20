@@ -9,6 +9,7 @@ import {
   Bell,
   UserCog,
   Heart,
+  LayoutDashboard,
 } from "lucide-react"
 
 import {
@@ -30,8 +31,9 @@ interface CitizenSidebarProps {
 }
 
 const navItems = [
+  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "adopciones", label: "Adopciones", icon: Heart },
-  { id: "dashboard", label: "Mi Perfil", icon: UserCog },
+  { id: "perfil", label: "Mis Datos", icon: UserCog },
   { id: "preturnos", label: "Pre-turnos", icon: Clock },
   { id: "animales", label: "Mis Animales", icon: Dog },
   { id: "denuncias", label: "Denuncias", icon: Siren },
@@ -53,8 +55,9 @@ export function CitizenSidebar({ activeSection, setActiveSection }: CitizenSideb
       <SidebarHeader className="flex items-center justify-between">
         <div className="flex items-center gap-2 p-2">
           <Logo className="size-8 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground group-data-[collapsible=icon]:hidden">
-            Zoonosis Central
+          <h2 className="text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">
+            Zoonosis Bariloche
+            <span className="block text-xs text-muted-foreground">Ciudadano</span>
           </h2>
         </div>
         <div className="group-data-[collapsible=icon]:hidden">
@@ -83,3 +86,5 @@ export function CitizenSidebar({ activeSection, setActiveSection }: CitizenSideb
     </Sidebar>
   )
 }
+
+    

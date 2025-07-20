@@ -56,8 +56,9 @@ export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps)
       <SidebarHeader className="flex items-center justify-between">
         <div className="flex items-center gap-2 p-2">
           <Logo className="size-8 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground group-data-[collapsible=icon]:hidden">
-            Zoonosis Central
+          <h2 className="text-lg font-semibold text-foreground group-data-[collapsible=icon]:hidden">
+            Zoonosis Bariloche
+            <span className="block text-xs text-muted-foreground">Administrador</span>
           </h2>
         </div>
         <div className="group-data-[collapsible=icon]:hidden">
@@ -86,3 +87,5 @@ export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps)
     </Sidebar>
   )
 }
+
+    

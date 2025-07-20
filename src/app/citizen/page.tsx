@@ -470,7 +470,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onNavigate('dashboard')}>
+            <DropdownMenuItem onClick={() => onNavigate('perfil')}>
               <User className="mr-2 h-4 w-4" />
               <span>Ver Perfil</span>
             </DropdownMenuItem>
@@ -501,7 +501,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
 
 
 export default function CitizenPage() {
-  const [activeSection, setActiveSection] = useState("adopciones")
+  const [activeSection, setActiveSection] = useState("dashboard")
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -534,7 +534,7 @@ export default function CitizenPage() {
   const renderSection = (): ReactNode => {
     switch (activeSection) {
       case "dashboard":
-        return <ProfileSection onFormOpen={handleFormOpen} />
+        return <InfoDashboardSection />
       case "perfil":
         return <ProfileSection onFormOpen={handleFormOpen} />
       case "preturnos":
@@ -548,7 +548,7 @@ export default function CitizenPage() {
       case "notificaciones":
         return <NotificacionesSection />
       default:
-        return <AdopcionesSection onFormOpen={handleFormOpen} />
+        return <InfoDashboardSection />
     }
   }
 
@@ -576,3 +576,5 @@ export default function CitizenPage() {
     </SidebarProvider>
   )
 }
+
+    
