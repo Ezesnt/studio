@@ -8,7 +8,6 @@ import { PanelLeft } from "lucide-react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import {
   Tooltip,
@@ -258,7 +257,7 @@ Sidebar.displayName = "Sidebar"
 const SidebarTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentProps<"button"> & { asChild?: boolean }
->(({ className, asChild, onClick, children, ...props }, ref) => {
+>(({ className, asChild, onClick, ...props }, ref) => {
   const { toggleSidebar } = useSidebar()
   const Comp = asChild ? Slot : "button"
 
@@ -267,15 +266,13 @@ const SidebarTrigger = React.forwardRef<
     toggleSidebar()
   }
 
-  if (asChild && React.isValidElement(children)) {
+  if (asChild) {
     return (
-      <Slot
+      <Comp
         ref={ref}
         onClick={handleClick}
         {...props}
-      >
-        {children}
-      </Slot>
+      />
     )
   }
   

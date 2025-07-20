@@ -32,6 +32,7 @@ import { formMappings } from "@/lib/forms-mapping"
 const turnos = [
   { id: 1, usuario: "Juan Pérez", estado: "Pendiente", fecha: "2025-08-01" },
   { id: 2, usuario: "María Gómez", estado: "Confirmado", fecha: "2025-08-05" },
+  { id: 3, usuario: "Maria Lopez", estado: "Cancelado", fecha: "2025-07-20" },
 ]
 
 const getStatusVariant = (status: string) => {
@@ -47,10 +48,18 @@ const getStatusVariant = (status: string) => {
   }
 }
 
-export default function TurnosSection() {
+interface TurnosSectionProps {
+  initialFilter?: {
+    type: 'usuario';
+    value: any;
+  }
+}
+
+export default function TurnosSection({ initialFilter }: TurnosSectionProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [filterText, setFilterText] = useState(initialFilter?.type === 'usuario' ? initialFilter.value : '')
 
   const handleFormOpen = (formId: string, item?: any) => {
     const formConfig = formMappings.turnos.forms.find(f => f.id === formId)
@@ -65,57 +74,63 @@ export default function TurnosSection() {
     setSelectedItem(null)
   }
 
+  const filteredTurnos = turnos.filter(turno => 
+    turno.usuario.toLowerCase().includes(filterText.toLowerCase())
+  );
+
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🕒 Turnos</h1>
 
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
-        <div className="flex gap-2">
+      <div className="flex gap-2">
           <Input
             type="text"
-            placeholder="Buscar turno por usuario, fecha, estado..."
+            placeholder="Buscar turno por usuario..."
             className="flex-grow"
+            value={filterText}
+            onChange={(e) => setFilterText(e.target.value)}
           />
-          <CollapsibleTrigger asChild>
-            <Button variant="outline">
-              Filtrar
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent>
-          <Card className="mb-4">
-            <CardContent className="pt-6">
-              <form>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="filtroEstadoTurno">Estado</Label>
-                    <Select>
-                      <SelectTrigger id="filtroEstadoTurno">
-                        <SelectValue placeholder="Todos" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="todos">Todos</SelectItem>
-                        <SelectItem value="pendiente">Pendiente</SelectItem>
-                        <SelectItem value="confirmado">Confirmado</SelectItem>
-                        <SelectItem value="cancelado">Cancelado</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="filtroFechaTurno">Fecha</Label>
-                    <Input type="date" id="filtroFechaTurno" />
-                  </div>
-                  <div className="self-end">
-                    <Button type="submit" className="w-full">
-                      Aplicar filtro
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </CollapsibleContent>
-      </Collapsible>
+          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline">
+                  Filtrar
+                </Button>
+              </CollapsibleTrigger>
+            <CollapsibleContent>
+              <Card className="absolute mt-2 z-10">
+                <CardContent className="pt-6">
+                  <form>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label htmlFor="filtroEstadoTurno">Estado</Label>
+                        <Select>
+                          <SelectTrigger id="filtroEstadoTurno">
+                            <SelectValue placeholder="Todos" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="todos">Todos</SelectItem>
+                            <SelectItem value="pendiente">Pendiente</SelectItem>
+                            <SelectItem value="confirmado">Confirmado</SelectItem>
+                            <SelectItem value="cancelado">Cancelado</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label htmlFor="filtroFechaTurno">Fecha</Label>
+                        <Input type="date" id="filtroFechaTurno" />
+                      </div>
+                      <div className="self-end">
+                        <Button type="submit" className="w-full">
+                          Aplicar filtro
+                        </Button>
+                      </div>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </CollapsibleContent>
+          </Collapsible>
+      </div>
 
       <Card>
         <Table>
@@ -128,7 +143,7 @@ export default function TurnosSection() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {turnos.map((turno) => (
+            {filteredTurnos.map((turno) => (
               <TableRow key={turno.id}>
                 <TableCell>{turno.usuario}</TableCell>
                 <TableCell>

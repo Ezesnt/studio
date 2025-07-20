@@ -32,6 +32,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export interface FormFieldConfig {
   name: string
@@ -225,32 +226,34 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
            )}
         </DialogHeader>
         {formConfig.fields ? (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
-              {formConfig.fields.map((field) => (
-                field.type !== "checkbox" ? (
-                  <FormField
-                    key={field.name}
-                    control={form.control}
-                    name={field.name as any}
-                    render={({ field: formField }) => renderField(field, formField)}
-                  />
-                ) : null
-              ))}
-              {formConfig.fields.filter(f => f.type === 'checkbox').map((field) => (
-                 <FormField
-                    key={field.name}
-                    control={form.control}
-                    name={field.name as any}
-                    render={({ field: formField }) => renderField(field, formField)}
-                  />
-              ))}
-              <DialogFooter>
-                <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
-                <Button type="submit">Guardar</Button>
-              </DialogFooter>
-            </form>
-          </Form>
+          <ScrollArea className="max-h-[70vh] pr-6">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+                {formConfig.fields.map((field) => (
+                  field.type !== "checkbox" ? (
+                    <FormField
+                      key={field.name}
+                      control={form.control}
+                      name={field.name as any}
+                      render={({ field: formField }) => renderField(field, formField)}
+                    />
+                  ) : null
+                ))}
+                {formConfig.fields.filter(f => f.type === 'checkbox').map((field) => (
+                   <FormField
+                      key={field.name}
+                      control={form.control}
+                      name={field.name as any}
+                      render={({ field: formField }) => renderField(field, formField)}
+                    />
+                ))}
+                <DialogFooter className="pt-4">
+                  <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
+                  <Button type="submit">Guardar</Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </ScrollArea>
         ) : (
            <DialogFooter>
               <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>

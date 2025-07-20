@@ -13,21 +13,32 @@ import ReportesSection from "@/components/sections/reportes"
 import NotificacionesSection from "@/components/sections/notificaciones"
 import MapaSection from "@/components/sections/mapa"
 
+type SectionFilter = {
+  type: string;
+  value: any;
+}
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState("dashboard")
+  const [sectionFilter, setSectionFilter] = useState<SectionFilter | undefined>(undefined);
+
+  const handleNavigateToSection = (section: string, filter?: SectionFilter) => {
+    setSectionFilter(filter);
+    setActiveSection(section);
+  }
 
   const renderSection = (): ReactNode => {
     switch (activeSection) {
       case "dashboard":
         return <DashboardSection />
       case "animales":
-        return <AnimalesSection />
+        return <AnimalesSection initialFilter={sectionFilter} />
       case "usuarios":
-        return <UsuariosSection />
+        return <UsuariosSection onNavigateToSection={handleNavigateToSection} />
       case "denuncias":
-        return <DenunciasSection />
+        return <DenunciasSection initialFilter={sectionFilter} />
       case "turnos":
-        return <TurnosSection />
+        return <TurnosSection initialFilter={sectionFilter} />
       case "adopciones":
         return <AdopcionesSection />
       case "reportes":
@@ -46,7 +57,7 @@ export default function Home() {
       <div className="flex min-h-screen w-full bg-secondary">
         <AppSidebar
           activeSection={activeSection}
-          setActiveSection={setActiveSection}
+          setActiveSection={handleNavigateToSection}
         />
         <main className="flex-1 flex-col bg-background rounded-l-2xl shadow-2xl">
           <div className="p-6 lg:p-8 h-full overflow-y-auto">

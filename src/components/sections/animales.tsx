@@ -33,10 +33,18 @@ const animals = [
   { id: 2, name: "Mishi", species: "Gato", raza: "Siamés", age: 2, sexo: "hembra", color: "Blanco y negro", tamanio: "pequenio", esta_castrado: false, owner: "Laura Gómez", patent: "54321" },
 ]
 
-export default function AnimalesSection() {
+interface AnimalesSectionProps {
+  initialFilter?: {
+    type: 'owner' | 'other';
+    value: any;
+  }
+}
+
+export default function AnimalesSection({ initialFilter }: AnimalesSectionProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [filterText, setFilterText] = useState(initialFilter?.type === 'owner' ? initialFilter.value : '')
 
   const handleFormOpen = (formId: string, item?: any) => {
     const formConfig = formMappings.animales.forms.find(f => f.id === formId)
@@ -50,71 +58,77 @@ export default function AnimalesSection() {
     setActiveForm(null)
     setSelectedItem(null)
   }
+  
+  const filteredAnimals = animals.filter(animal => 
+    animal.owner.toLowerCase().includes(filterText.toLowerCase()) || 
+    animal.name.toLowerCase().includes(filterText.toLowerCase())
+  )
 
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🐾 Animales</h1>
 
-      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
-        <div className="flex items-center justify-between">
-            <div className="flex gap-2 flex-grow">
-              <Input
-                type="text"
-                placeholder="Buscar animal por nombre, especie, propietario..."
-                className="flex-grow"
-              />
+      <div className="flex items-center justify-between">
+          <div className="flex gap-2 flex-grow">
+            <Input
+              type="text"
+              placeholder="Buscar animal por nombre o propietario..."
+              className="flex-grow"
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+            />
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
               <CollapsibleTrigger asChild>
                 <Button variant="outline">
                   Filtrar
                 </Button>
               </CollapsibleTrigger>
-            </div>
-            <Button onClick={() => handleFormOpen('createAnimalForm')} className="ml-4">Crear Animal</Button>
-        </div>
-        
-        <CollapsibleContent>
-          <Card className="mb-4">
-            <CardContent className="pt-6">
-              <form>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="filtroEspecie">Especie</Label>
-                    <Select>
-                      <SelectTrigger id="filtroEspecie">
-                        <SelectValue placeholder="Todas" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="todas">Todas</SelectItem>
-                        <SelectItem value="perro">Perro</SelectItem>
-                        <SelectItem value="gato">Gato</SelectItem>
-                        <SelectItem value="ave">Ave</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="filtroEstadoAnimal">Estado</Label>
-                    <Select>
-                      <SelectTrigger id="filtroEstadoAnimal">
-                        <SelectValue placeholder="Todos" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="todos">Todos</SelectItem>
-                        <SelectItem value="activo">Activo</SelectItem>
-                        <SelectItem value="baja">Baja</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="self-end">
-                    <Button type="submit" className="w-full">
-                      Aplicar filtro
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </CollapsibleContent>
-      </Collapsible>
+              <CollapsibleContent>
+                  <Card className="absolute mt-2 z-10">
+                  <CardContent className="pt-6">
+                    <form>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="filtroEspecie">Especie</Label>
+                          <Select>
+                            <SelectTrigger id="filtroEspecie">
+                              <SelectValue placeholder="Todas" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="todas">Todas</SelectItem>
+                              <SelectItem value="perro">Perro</SelectItem>
+                              <SelectItem value="gato">Gato</SelectItem>
+                              <SelectItem value="ave">Ave</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="filtroEstadoAnimal">Estado</Label>
+                          <Select>
+                            <SelectTrigger id="filtroEstadoAnimal">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="todos">Todos</SelectItem>
+                              <SelectItem value="activo">Activo</SelectItem>
+                              <SelectItem value="baja">Baja</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="self-end">
+                          <Button type="submit" className="w-full">
+                            Aplicar filtro
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+          <Button onClick={() => handleFormOpen('createAnimalForm')} className="ml-4">Crear Animal</Button>
+      </div>
 
       <Card>
         <Table>
@@ -128,7 +142,7 @@ export default function AnimalesSection() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {animals.map((animal) => (
+            {filteredAnimals.map((animal) => (
               <TableRow key={animal.id}>
                 <TableCell>{animal.name}</TableCell>
                 <TableCell>{animal.species}</TableCell>
