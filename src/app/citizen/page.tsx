@@ -2,7 +2,7 @@
 "use client"
 
 import React, { useState, type ReactNode } from "react"
-import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog } from "lucide-react"
+import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog, Home } from "lucide-react"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { CitizenSidebar } from "@/components/app/citizen-sidebar"
 import {
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
 import { Input } from "@/components/ui/input"
@@ -56,8 +56,28 @@ const notificaciones = [
   "Vacunas próximas a vencer para Mishi (Gato)",
   "Nueva denuncia recibida en barrio Centro"
 ];
+const adopciones = [
+  { id: 1, name: "Rex", species: "Perro", age: "3 años", status: "Disponible", detalle: "Amigable y juguetón", url: "" },
+  { id: 2, name: "Luna", species: "Gato", age: "1 año", status: "Adoptado", detalle: "Le gusta dormir mucho", url: "" },
+]
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case "Disponible":
+      return "default"
+    case "Adoptado":
+      return "secondary"
+    case 'Resuelta':
+      return "default"
+    case 'Pendiente':
+      return "destructive"
+    case 'Confirmado':
+        return 'default'
+    default:
+      return "outline"
+  }
+}
 
-function DashboardSection({ onFormOpen }: { onFormOpen: (formId: string, item: any) => void }) {
+function ProfileSection({ onFormOpen }: { onFormOpen: (formId: string, item: any) => void }) {
   return (
     <div className="space-y-4">
       <h1 className="flex items-center gap-3"><UserCog /> Información Personal</h1>
@@ -208,6 +228,59 @@ function DenunciasSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
   );
 }
 
+function AdopcionesSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
+    const [filterText, setFilterText] = useState("");
+    const filteredAdoptions = adopciones.filter(adopcion =>
+        adopcion.name.toLowerCase().includes(filterText.toLowerCase()) ||
+        adopcion.species.toLowerCase().includes(filterText.toLowerCase())
+    );
+
+    return (
+        <div className="space-y-6">
+            <h1 className="flex items-center gap-3"><Home /> Adopciones</h1>
+            <p className="text-muted-foreground">Explora los animales disponibles para adopción.</p>
+            <div className="flex flex-col md:flex-row gap-2">
+                <Input
+                    placeholder="Buscar por nombre o especie..."
+                    className="flex-grow"
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                />
+            </div>
+            <Card>
+                <div className="relative w-full overflow-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Nombre</TableHead>
+                                <TableHead>Especie</TableHead>
+                                <TableHead>Edad</TableHead>
+                                <TableHead>Estado</TableHead>
+                                <TableHead>Acciones</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {filteredAdoptions.map((adopcion) => (
+                                <TableRow key={adopcion.id}>
+                                    <TableCell>{adopcion.name}</TableCell>
+                                    <TableCell>{adopcion.species}</TableCell>
+                                    <TableCell>{adopcion.age}</TableCell>
+                                    <TableCell>
+                                        <Badge variant={getStatusVariant(adopcion.status)} className={adopcion.status === 'Disponible' ? 'bg-green-600' : ''}>{adopcion.status}</Badge>
+                                    </TableCell>
+                                    <TableCell className="flex flex-wrap gap-2">
+                                        <Button size="sm" variant="outline" onClick={() => onFormOpen('viewAnimalDetailsForm', adopcion)}>Ver Detalle</Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Card>
+        </div>
+    );
+}
+
 function NotificacionesSection() {
   return (
     <div className="space-y-6">
@@ -315,17 +388,19 @@ export default function CitizenPage() {
   const renderSection = (): ReactNode => {
     switch (activeSection) {
       case "dashboard":
-        return <DashboardSection onFormOpen={handleFormOpen} />
+        return <ProfileSection onFormOpen={handleFormOpen} />
       case "preturnos":
         return <PreturnosSection onFormOpen={handleFormOpen} />
       case "animales":
         return <MisAnimalesSection onFormOpen={handleFormOpen} />
       case "denuncias":
         return <DenunciasSection onFormOpen={handleFormOpen} />
+      case "adopciones":
+        return <AdopcionesSection onFormOpen={handleFormOpen} />
       case "notificaciones":
         return <NotificacionesSection />
       default:
-        return <DashboardSection onFormOpen={handleFormOpen} />
+        return <ProfileSection onFormOpen={handleFormOpen} />
     }
   }
 

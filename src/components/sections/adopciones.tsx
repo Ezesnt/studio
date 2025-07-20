@@ -15,6 +15,10 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
+import { Input } from "../ui/input"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
+import { Label } from "../ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 const adopciones = [
   { id: 1, name: "Rex", species: "Perro", age: "3 años", status: "Disponible", detalle: "Amigable y juguetón", url: "" },
@@ -35,6 +39,7 @@ const getStatusVariant = (status: string) => {
 export default function AdopcionesSection() {
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
   const [selectedItem, setSelectedItem] = useState<any>(null)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleFormOpen = (formId: string, item?: any) => {
     let formConfig;
@@ -44,7 +49,6 @@ export default function AdopcionesSection() {
         formConfig = {...formConfig, title: "Publicar Animal para Adopción" }
       }
     } else if (formId === 'assignOwnerForm') {
-      // Find the form in the animales section since it's shared
       formConfig = formMappings.animales.forms.find(f => f.id === formId);
     } else {
       formConfig = formMappings.adopciones.forms.find(f => f.id === formId)
@@ -66,9 +70,47 @@ export default function AdopcionesSection() {
       <h1 className="flex items-center gap-3">🏡 Adopciones</h1>
       <p className="text-muted-foreground">Listado de animales en adopción. Puedes publicar, editar o eliminar publicaciones.</p>
 
-      <div className="flex justify-start">
-        <Button onClick={() => handleFormOpen('createAdoptionForm')}>Agregar Adopción</Button>
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex w-full flex-col md:flex-row gap-2">
+            <Input
+              type="text"
+              placeholder="Buscar por nombre, especie..."
+              className="flex-grow"
+            />
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="w-full md:w-auto">
+                  Filtrar
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                  <Card className="absolute mt-2 z-10 w-full md:w-auto">
+                    <form className="p-4 space-y-4">
+                        <div>
+                          <Label htmlFor="filtroEspecie">Especie</Label>
+                          <Select>
+                            <SelectTrigger id="filtroEspecie">
+                              <SelectValue placeholder="Todas" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="todas">Todas</SelectItem>
+                              <SelectItem value="perro">Perro</SelectItem>
+                              <SelectItem value="gato">Gato</SelectItem>
+                              <SelectItem value="ave">Ave</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Button type="submit" className="w-full">
+                            Aplicar filtro
+                        </Button>
+                    </form>
+                </Card>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        <Button onClick={() => handleFormOpen('createAdoptionForm')} className="w-full md:w-auto flex-shrink-0">Agregar Adopción</Button>
       </div>
+
 
       <Card>
         <div className="relative w-full overflow-auto">
@@ -95,13 +137,8 @@ export default function AdopcionesSection() {
                     <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAdoptionForm', adopcion)}>Editar</Button>
                     <Button size="sm" variant="destructive" onClick={() => handleFormOpen('endAdoptionForm', adopcion)}>Eliminar</Button>
                      {adopcion.status === 'Disponible' && (
-                        <Button size="sm" variant="ghost" onClick={() => handleFormOpen('assignOwnerForm', adopcion)}>Asignar Propietario</Button>
+                        <Button size="sm" variant="secondary" onClick={() => handleFormOpen('assignOwnerForm', adopcion)}>Asignar Propietario</Button>
                      )}
-                    {adopcion.status === "Disponible" ? (
-                      <Button size="sm">Publicar</Button>
-                    ) : (
-                      <Button size="sm" variant="secondary" disabled>Publicado</Button>
-                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -118,3 +155,5 @@ export default function AdopcionesSection() {
     </div>
   )
 }
+
+    

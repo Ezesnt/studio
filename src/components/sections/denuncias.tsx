@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from "react"
@@ -16,7 +17,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -112,32 +113,26 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <Card className="absolute mt-2 z-10">
-                  <CardContent className="pt-6">
-                    <form>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <Label htmlFor="filtroEstadoDenuncia">Estado</Label>
-                          <Select>
-                            <SelectTrigger id="filtroEstadoDenuncia">
-                              <SelectValue placeholder="Todos" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="todos">Todos</SelectItem>
-                              <SelectItem value="pendiente">Pendiente</SelectItem>
-                              <SelectItem value="resuelto">Resuelto</SelectItem>
-                              <SelectItem value="en_proceso">En proceso</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="col-span-1 md:col-start-3 self-end">
-                          <Button type="submit" className="w-full">
-                            Aplicar filtro
-                          </Button>
-                        </div>
+                <Card className="absolute mt-2 z-10 w-full md:w-auto">
+                  <form className="p-4 space-y-4">
+                      <div>
+                        <Label htmlFor="filtroEstadoDenuncia">Estado</Label>
+                        <Select>
+                          <SelectTrigger id="filtroEstadoDenuncia">
+                            <SelectValue placeholder="Todos" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="todos">Todos</SelectItem>
+                            <SelectItem value="pendiente">Pendiente</SelectItem>
+                            <SelectItem value="resuelto">Resuelto</SelectItem>
+                            <SelectItem value="en_proceso">En proceso</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </form>
-                  </CardContent>
+                      <Button type="submit" className="w-full">
+                        Aplicar filtro
+                      </Button>
+                  </form>
                 </Card>
               </CollapsibleContent>
             </Collapsible>
@@ -183,3 +178,5 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
     </div>
   )
 }
+
+    
