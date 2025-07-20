@@ -28,12 +28,12 @@ const preturnos = [
   { id: 102, estado: "Confirmado", fechaSolicitada: "2025-08-15" }
 ];
 const animales = [
-  { id: 1, nombre: "Firulais", especie: "Perro", edad: "5 años" },
-  { id: 2, nombre: "Mishi", especie: "Gato", edad: "3 años" }
+  { id: 1, nombre: "Firulais", especie: "Perro", edad: "5 años", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] },
+  { id: 2, nombre: "Mishi", especie: "Gato", edad: "3 años", historial_clinico: [{fecha: "2024-09-01", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] }
 ];
 const denuncias = [
-  { id: 201, barrio: "Centro", fecha: "2025-07-10", estado: "Pendiente", descripcion: "Perro callejero agresivo" },
-  { id: 202, barrio: "Sur", fecha: "2025-06-25", estado: "Resuelta", descripcion: "Maltrato animal reportado" }
+  { id: 201, tipo: "maltrato", barrio: "Centro", direccion: "Calle Falsa 123", fecha: "2025-07-10", estado: "Pendiente", descripcion: "Perro callejero agresivo" },
+  { id: 202, tipo: "abandono", barrio: "Sur", direccion: "Plaza Principal", fecha: "2025-06-25", estado: "Resuelta", descripcion: "Maltrato animal reportado" }
 ];
 const notificaciones = [
   "Recordatorio: Patente a vencer para Firulais (Perro)",
@@ -68,32 +68,34 @@ function PreturnosSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
       <h1 className="flex items-center gap-3"><Clock /> Pre-turnos</h1>
       <Button onClick={() => onFormOpen('solicitarPreturnoForm')}>Solicitar Pre-turno</Button>
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Fecha Solicitada</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {preturnos.map(turno => (
-              <TableRow key={turno.id}>
-                <TableCell>{turno.id}</TableCell>
-                <TableCell><Badge variant={getStatusVariant(turno.estado)} className={turno.estado === 'Confirmado' ? 'bg-green-600' : ''}>{turno.estado}</Badge></TableCell>
-                <TableCell>{turno.fechaSolicitada}</TableCell>
-                <TableCell>
-                  {turno.estado === 'Confirmado' ? (
-                    <Button size="sm">Ver detalle</Button>
-                  ) : (
-                    <Button size="sm" variant="outline" disabled>Esperando confirmación</Button>
-                  )}
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Fecha Solicitada</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {preturnos.map(turno => (
+                <TableRow key={turno.id}>
+                  <TableCell>{turno.id}</TableCell>
+                  <TableCell><Badge variant={getStatusVariant(turno.estado)} className={turno.estado === 'Confirmado' ? 'bg-green-600' : ''}>{turno.estado}</Badge></TableCell>
+                  <TableCell>{turno.fechaSolicitada}</TableCell>
+                  <TableCell>
+                    {turno.estado === 'Confirmado' ? (
+                      <Button size="sm">Ver detalle</Button>
+                    ) : (
+                      <Button size="sm" variant="outline" disabled>Esperando confirmación</Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );
@@ -103,35 +105,37 @@ function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3"><Dog /> Mis Animales</h1>
-      <div className="flex gap-2">
-        <Input placeholder="Buscar animal por nombre o especie..." />
+      <div className="flex flex-col md:flex-row gap-2">
+        <Input placeholder="Buscar animal por nombre o especie..." className="flex-grow" />
         <Button variant="outline">Filtrar</Button>
       </div>
       <Button onClick={() => onFormOpen('agregarAnimalForm')}>Agregar Animal</Button>
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Especie</TableHead>
-              <TableHead>Edad</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {animales.map(animal => (
-              <TableRow key={animal.id}>
-                <TableCell>{animal.nombre}</TableCell>
-                <TableCell>{animal.especie}</TableCell>
-                <TableCell>{animal.edad}</TableCell>
-                <TableCell className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => onFormOpen('viewAnimalHealthBookForm', animal)}>Libreta</Button>
-                  <Button size="sm" variant="secondary" onClick={() => onFormOpen('viewAnimalDetailsForm', animal)}>Ver detalle</Button>
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Especie</TableHead>
+                <TableHead>Edad</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {animales.map(animal => (
+                <TableRow key={animal.id}>
+                  <TableCell>{animal.nombre}</TableCell>
+                  <TableCell>{animal.especie}</TableCell>
+                  <TableCell>{animal.edad}</TableCell>
+                  <TableCell className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" onClick={() => onFormOpen('viewAnimalHealthBookForm', animal)}>Libreta</Button>
+                    <Button size="sm" variant="secondary" onClick={() => onFormOpen('viewAnimalDetailsForm', animal)}>Ver detalle</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );
@@ -144,30 +148,34 @@ function DenunciasSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
       <h1 className="flex items-center gap-3"><Siren /> Denuncias</h1>
       <Button onClick={() => onFormOpen('agregarDenunciaForm')}>Agregar Denuncia</Button>
       <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Barrio</TableHead>
-              <TableHead>Fecha</TableHead>
-              <TableHead>Estado</TableHead>
-              <TableHead>Acciones</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {denuncias.map(d => (
-              <TableRow key={d.id}>
-                <TableCell>{d.id}</TableCell>
-                <TableCell>{d.barrio}</TableCell>
-                <TableCell>{d.fecha}</TableCell>
-                <TableCell><Badge variant={getStatusVariant(d.estado)} className={d.estado === 'Resuelta' ? 'bg-green-600' : ''}>{d.estado}</Badge></TableCell>
-                <TableCell>
-                  <Button size="sm" variant="outline" onClick={() => onFormOpen('viewComplaintDetailsForm', d)}>Ver detalle</Button>
-                </TableCell>
+        <div className="relative w-full overflow-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Tipo</TableHead>
+                <TableHead>Ubicación</TableHead>
+                <TableHead>Fecha</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead>Acciones</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {denuncias.map(d => (
+                <TableRow key={d.id}>
+                  <TableCell>{d.id}</TableCell>
+                  <TableCell>{d.tipo}</TableCell>
+                  <TableCell>{d.direccion}</TableCell>
+                  <TableCell>{d.fecha}</TableCell>
+                  <TableCell><Badge variant={getStatusVariant(d.estado)} className={d.estado === 'Resuelta' ? 'bg-green-600' : ''}>{d.estado}</Badge></TableCell>
+                  <TableCell>
+                    <Button size="sm" variant="outline" onClick={() => onFormOpen('viewComplaintDetailsForm', d)}>Ver detalle</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
     </div>
   );
@@ -317,3 +325,5 @@ export default function CitizenPage() {
     </SidebarProvider>
   )
 }
+
+    

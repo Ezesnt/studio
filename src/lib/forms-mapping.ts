@@ -179,9 +179,17 @@ export const formMappings = {
         "id": "agregarDenunciaForm",
         "title": "Agregar Denuncia",
         "fields": [
-            { "name": "barrio", "label": "Barrio", "type": "text", "required": true },
-            { "name": "descripcion", "label": "Descripción", "type": "textarea", "required": true },
-            { "name": "fecha", "label": "Fecha", "type": "date", "required": true }
+          { "name": "tipo", "label": "Tipo de Denuncia", "type": "select", "options": [
+              { "value": "maltrato", "text": "Maltrato animal" },
+              { "value": "abandono", "text": "Abandono" },
+              { "value": "venta_ilegal", "text": "Venta ilegal" },
+              { "value": "animal_peligroso", "text": "Animal peligroso" },
+              { "value": "otros", "text": "Otros" }
+            ], "required": true 
+          },
+          { "name": "direccion", "label": "Dirección del incidente", "type": "text", "placeholder": "Ej: Calle Falsa 123, entre Av. Siempreviva y Calle 4", "required": true },
+          { "name": "descripcion", "label": "Descripción detallada", "type": "textarea", "placeholder": "Describe la situación con el mayor detalle posible.", "required": true },
+          { "name": "archivos", "label": "Adjuntar fotos o videos (PDF, JPG, PNG, MP4)", "type": "file", "required": false }
         ]
       }
     ]
@@ -252,3 +260,5 @@ export const formMappings = {
     ]
   }
 }
+
+    
