@@ -32,8 +32,16 @@ type SectionFilter = {
   value: any;
 }
 
+const adminInfo = {
+  id: 1, name: "Admin User", email: "admin@zoonosis.com"
+}
+
 function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
   const { toggleSidebar } = useSidebar()
+  const handleProfileClick = () => {
+    onNavigate("usuarios", { type: 'id', value: adminInfo.id });
+  }
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-border/80 px-4 md:px-6">
       <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
@@ -56,7 +64,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleProfileClick}>
               <User className="mr-2 h-4 w-4" />
               <span>Ver Perfil</span>
             </DropdownMenuItem>
@@ -108,7 +116,7 @@ export default function AdminPage() {
       case "animales":
         return <AnimalesSection initialFilter={sectionFilter} />
       case "usuarios":
-        return <UsuariosSection onNavigateToSection={handleNavigateToSection} />
+        return <UsuariosSection onNavigateToSection={handleNavigateToSection} initialFilter={sectionFilter} />
       case "denuncias":
         return <DenunciasSection initialFilter={sectionFilter} />
       case "turnos":
