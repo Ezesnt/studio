@@ -15,14 +15,27 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 
-const userInfo = { id: 1, nombre: "Juan", apellido: "Pérez", email: "juanperez@mail.com", dni: "30555666" };
+const userInfo = {
+    "activo": true,
+    "apellido": "Pérez",
+    "categoria": "ciudadano",
+    "dni": "30555666",
+    "domicilio": "Av. Siempreviva 742",
+    "email": "juanperez@mail.com",
+    "fecha_registro": "2025-07-13T02:20:29.450823",
+    "id": 1,
+    "nombre": "Juan",
+    "telefono": "1122334455",
+    "barrio": "centro"
+};
+
 const preturnos = [
   { id: 101, estado: "Pendiente", fechaSolicitada: "2025-08-10" },
   { id: 102, estado: "Confirmado", fechaSolicitada: "2025-08-15", fechaConfirmada: "2025-08-15 10:00", profesional: "Dr. Canino", instrucciones: "Traer al animal en ayunas." }
@@ -45,15 +58,18 @@ const notificaciones = [
 function DashboardSection({ onFormOpen }: { onFormOpen: (formId: string, item: any) => void }) {
   return (
     <div className="space-y-4">
-      <h1 className="flex items-center gap-3"><UserCog /> Dashboard</h1>
+      <h1 className="flex items-center gap-3"><UserCog /> Información Personal</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Información Personal</CardTitle>
+          <CardTitle>Mis Datos</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <p><strong>Nombre:</strong> {userInfo.nombre} {userInfo.apellido}</p>
-          <p><strong>Email:</strong> {userInfo.email}</p>
           <p><strong>DNI:</strong> {userInfo.dni}</p>
+          <p><strong>Email:</strong> {userInfo.email}</p>
+          <p><strong>Domicilio:</strong> {userInfo.domicilio}</p>
+          <p><strong>Teléfono:</strong> {userInfo.telefono}</p>
+          <p><strong>Barrio:</strong> {userInfo.barrio}</p>
           <Button className="mt-4" onClick={() => onFormOpen('editCitizenUserForm', userInfo)}>Editar Información</Button>
         </CardContent>
       </Card>
@@ -234,7 +250,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onNavigate('dashboard')}>
               <User className="mr-2 h-4 w-4" />
               <span>Ver Perfil</span>
             </DropdownMenuItem>
@@ -334,3 +350,5 @@ export default function CitizenPage() {
     </SidebarProvider>
   )
 }
+
+    
