@@ -289,8 +289,8 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
     );
   }
   
-  const readOnlyForms = ['viewComplaintDetailsForm', 'viewAnimalDetailsForm'];
-  const isReadOnlyForm = readOnlyForms.includes(formConfig.id);
+  const readOnlyForms = ['viewComplaintDetailsForm', 'viewAnimalDetailsForm', 'viewAppointmentDetailsForm'];
+  const isReadOnlyForm = formConfig.id ? readOnlyForms.includes(formConfig.id) : false;
 
 
   const renderField = (fieldConfig: FormFieldConfig, formField: any) => {
