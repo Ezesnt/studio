@@ -33,6 +33,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Badge } from "../ui/badge"
+import { Calendar, Syringe } from "lucide-react"
 
 export interface FormFieldConfig {
   name: string
@@ -59,6 +62,7 @@ export interface FormConfig {
   title: string
   fields?: FormFieldConfig[]
   confirmationText?: string
+  comment?: string;
 }
 
 interface DynamicFormProps {
@@ -157,8 +161,53 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
 
   if (!formConfig) return null
 
+  // Special case for displaying health book
+  if (formConfig.id === 'viewAnimalHealthBookForm') {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Libreta Sanitaria de {item?.name}</DialogTitle>
+            <DialogDescription>
+              Historial clínico completo del animal.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh] pr-4">
+            <div className="space-y-4 py-4">
+              {item?.historial_clinico && item.historial_clinico.length > 0 ? (
+                item.historial_clinico.map((record: any, index: number) => (
+                  <Card key={index} className="shadow-md">
+                    <CardHeader>
+                      <CardTitle className="text-base flex justify-between items-center">
+                        <span className="capitalize flex items-center gap-2">
+                           {record.tipo === 'Consulta' ? <Calendar className="size-4" /> : <Syringe className="size-4" />}
+                           {record.tipo}
+                        </span>
+                        <Badge variant="secondary">{record.fecha}</Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p>{record.descripcion}</p>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-center py-8">No hay registros en el historial clínico.</p>
+              )}
+            </div>
+          </ScrollArea>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>Cerrar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   const renderField = (fieldConfig: FormFieldConfig, formField: any) => {
-    const { name, label, type, placeholder, options } = fieldConfig
+    const { name, label, type, placeholder, options, required } = fieldConfig;
+    const isReadOnly = formConfig.id === 'viewAnimalDetailsForm' || formConfig.id === 'viewComplaintDetailsForm' || formConfig.id === 'viewAppointmentDetailsForm';
+    const fieldLabel = required ? `${label} *` : label;
     
     if (type === 'hidden') {
       return <Input type="hidden" {...formField} />
@@ -166,11 +215,11 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
 
     return (
       <FormItem>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel>{fieldLabel}</FormLabel>
         <FormControl>
           <>
             {type === "select" && options ? (
-              <Select onValueChange={formField.onChange} defaultValue={formField.value}>
+              <Select onValueChange={formField.onChange} defaultValue={formField.value} disabled={isReadOnly}>
                 <SelectTrigger>
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
@@ -187,6 +236,7 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                 <Checkbox
                   checked={formField.value}
                   onCheckedChange={formField.onChange}
+                  disabled={isReadOnly}
                 />
                  <label
                   htmlFor={name}
@@ -196,9 +246,9 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                 </label>
               </div>
             ) : type === "textarea" ? (
-              <Textarea placeholder={placeholder} {...formField} />
+              <Textarea placeholder={placeholder} {...formField} readOnly={isReadOnly} />
             ) : (
-              <Input type={type} placeholder={placeholder} {...formField} value={formField.value || ''}/>
+              <Input type={type} placeholder={placeholder} {...formField} value={formField.value || ''} readOnly={isReadOnly} />
             )}
           </>
         </FormControl>
@@ -216,13 +266,15 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
     onClose();
   }
 
+  const isReadOnlyForm = formConfig.id === 'viewAnimalDetailsForm' || formConfig.id === 'viewComplaintDetailsForm' || formConfig.id === 'viewAppointmentDetailsForm';
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{formConfig.title}</DialogTitle>
-           {formConfig.confirmationText && (
-             <DialogDescription>{formConfig.confirmationText}</DialogDescription>
+           {(formConfig.confirmationText || formConfig.comment) && (
+             <DialogDescription>{formConfig.confirmationText || formConfig.comment}</DialogDescription>
            )}
         </DialogHeader>
         {formConfig.fields ? (
@@ -249,7 +301,7 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                 ))}
                 <DialogFooter className="pt-4">
                   <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
-                  <Button type="submit">Guardar</Button>
+                  {!isReadOnlyForm && <Button type="submit">Guardar</Button>}
                 </DialogFooter>
               </form>
             </Form>

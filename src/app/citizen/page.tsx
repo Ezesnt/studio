@@ -2,7 +2,7 @@
 "use client"
 
 import React, { useState, type ReactNode } from "react"
-import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, Home, UserCog, List } from "lucide-react"
+import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog } from "lucide-react"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { CitizenSidebar } from "@/components/app/citizen-sidebar"
 import {
@@ -25,7 +25,7 @@ import { Badge } from "@/components/ui/badge"
 const userInfo = { id: 1, nombre: "Juan", apellido: "Pérez", email: "juanperez@mail.com", dni: "30555666" };
 const preturnos = [
   { id: 101, estado: "Pendiente", fechaSolicitada: "2025-08-10" },
-  { id: 102, estado: "Confirmado", fechaSolicitada: "2025-08-15" }
+  { id: 102, estado: "Confirmado", fechaSolicitada: "2025-08-15", fechaConfirmada: "2025-08-15 10:00", profesional: "Dr. Canino", instrucciones: "Traer al animal en ayunas." }
 ];
 const animales = [
   { id: 1, nombre: "Firulais", especie: "Perro", edad: "5 años", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] },
@@ -86,7 +86,7 @@ function PreturnosSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
                   <TableCell>{turno.fechaSolicitada}</TableCell>
                   <TableCell>
                     {turno.estado === 'Confirmado' ? (
-                      <Button size="sm">Ver detalle</Button>
+                      <Button size="sm" onClick={() => onFormOpen('viewAppointmentDetailsForm', turno)}>Ver detalle</Button>
                     ) : (
                       <Button size="sm" variant="outline" disabled>Esperando confirmación</Button>
                     )}
@@ -102,12 +102,21 @@ function PreturnosSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
 }
 
 function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
+  const [filterText, setFilterText] = useState("");
+  const filteredAnimals = animales.filter(animal =>
+    animal.nombre.toLowerCase().includes(filterText.toLowerCase()) ||
+    animal.especie.toLowerCase().includes(filterText.toLowerCase())
+  );
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3"><Dog /> Mis Animales</h1>
       <div className="flex flex-col md:flex-row gap-2">
-        <Input placeholder="Buscar animal por nombre o especie..." className="flex-grow" />
-        <Button variant="outline">Filtrar</Button>
+        <Input 
+          placeholder="Buscar animal por nombre o especie..." 
+          className="flex-grow" 
+          value={filterText}
+          onChange={(e) => setFilterText(e.target.value)}
+        />
       </div>
       <Button onClick={() => onFormOpen('agregarAnimalForm')}>Agregar Animal</Button>
       <Card>
@@ -122,7 +131,7 @@ function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?
               </TableRow>
             </TableHeader>
             <TableBody>
-              {animales.map(animal => (
+              {filteredAnimals.map(animal => (
                 <TableRow key={animal.id}>
                   <TableCell>{animal.nombre}</TableCell>
                   <TableCell>{animal.especie}</TableCell>
@@ -325,5 +334,3 @@ export default function CitizenPage() {
     </SidebarProvider>
   )
 }
-
-    

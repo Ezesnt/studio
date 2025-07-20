@@ -107,9 +107,9 @@ export const formMappings = {
       },
       {
         "id": "viewAnimalHealthBookForm",
-        "title": "Historial Clínico",
+        "title": "Libreta Sanitaria",
         "endpoint": "GET /animales/:id/historial-clinico",
-        "confirmationText": "Mostrando el historial clínico del animal. Esta es una vista de solo lectura."
+        "comment": "Este es un formulario especial para mostrar datos, no para ingresarlos."
       }
     ]
   },
@@ -223,6 +223,15 @@ export const formMappings = {
           { "name": "fecha", "label": "Fecha deseada", "type": "date", "required": true },
           { "name": "motivo", "label": "Motivo (ej. castración, control)", "type": "textarea", "required": true }
         ]
+      },
+      {
+        "id": "viewAppointmentDetailsForm",
+        "title": "Detalle del Turno Confirmado",
+        "fields": [
+          { "name": "fechaConfirmada", "label": "Fecha y Hora", "type": "text" },
+          { "name": "profesional", "label": "Profesional Asignado", "type": "text" },
+          { "name": "instrucciones", "label": "Instrucciones", "type": "textarea" }
+        ]
       }
     ]
   },
@@ -260,5 +269,3 @@ export const formMappings = {
     ]
   }
 }
-
-    
