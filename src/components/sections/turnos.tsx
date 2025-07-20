@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from "react"
@@ -27,10 +26,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
+import { formMappings } from "@/lib/forms-mapping"
 
 const turnos = [
-  { usuario: "Juan Pérez", estado: "Pendiente", fecha: "2025-08-01" },
-  { usuario: "María Gómez", estado: "Confirmado", fecha: "2025-08-05" },
+  { id: 1, usuario: "Juan Pérez", estado: "Pendiente", fecha: "2025-08-01" },
+  { id: 2, usuario: "María Gómez", estado: "Confirmado", fecha: "2025-08-05" },
 ]
 
 const getStatusVariant = (status: string) => {
@@ -48,6 +49,22 @@ const getStatusVariant = (status: string) => {
 
 export default function TurnosSection() {
   const [isOpen, setIsOpen] = useState(false)
+  const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
+  const [selectedItem, setSelectedItem] = useState<any>(null)
+
+  const handleFormOpen = (formId: string, item?: any) => {
+    const formConfig = formMappings.turnos.forms.find(f => f.id === formId)
+    if (formConfig) {
+      setActiveForm(formConfig)
+      setSelectedItem(item)
+    }
+  }
+
+  const handleCloseForm = () => {
+    setActiveForm(null)
+    setSelectedItem(null)
+  }
+
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🕒 Turnos</h1>
@@ -112,7 +129,7 @@ export default function TurnosSection() {
           </TableHeader>
           <TableBody>
             {turnos.map((turno) => (
-              <TableRow key={turno.usuario}>
+              <TableRow key={turno.id}>
                 <TableCell>{turno.usuario}</TableCell>
                 <TableCell>
                   <Badge variant={getStatusVariant(turno.estado)} className={turno.estado === 'Confirmado' ? 'bg-green-600' : ''}>{turno.estado}</Badge>
@@ -121,12 +138,12 @@ export default function TurnosSection() {
                 <TableCell className="flex flex-wrap gap-2">
                   {turno.estado === "Pendiente" && (
                     <>
-                      <Button size="sm">Confirmar</Button>
-                      <Button size="sm" variant="destructive">Cancelar</Button>
+                      <Button size="sm" onClick={() => handleFormOpen('confirmAppointmentForm', turno)}>Confirmar</Button>
+                      <Button size="sm" variant="destructive" onClick={() => handleFormOpen('cancelAppointmentForm', turno)}>Cancelar</Button>
                     </>
                   )}
                   {turno.estado === "Confirmado" && (
-                    <Button size="sm" variant="destructive">Cancelar</Button>
+                    <Button size="sm" variant="destructive" onClick={() => handleFormOpen('cancelAppointmentForm', turno)}>Cancelar</Button>
                   )}
                 </TableCell>
               </TableRow>
@@ -134,6 +151,13 @@ export default function TurnosSection() {
           </TableBody>
         </Table>
       </Card>
+
+      <DynamicForm 
+        formConfig={activeForm}
+        isOpen={!!activeForm}
+        onClose={handleCloseForm}
+        item={selectedItem}
+      />
     </div>
   )
 }

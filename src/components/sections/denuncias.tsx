@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from "react"
@@ -27,6 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
+import { formMappings } from "@/lib/forms-mapping"
 
 const denuncias = [
   { id: "456", denunciante: "Pedro Díaz", ubicacion: "Centro", estado: "Pendiente" },
@@ -46,18 +47,34 @@ const getStatusVariant = (status: string) => {
 
 export default function DenunciasSection() {
   const [isOpen, setIsOpen] = useState(false)
+  const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
+  const [selectedItem, setSelectedItem] = useState<any>(null)
+
+  const handleFormOpen = (formId: string, item?: any) => {
+    const formConfig = formMappings.denuncias.forms.find(f => f.id === formId)
+    if (formConfig) {
+      setActiveForm(formConfig)
+      setSelectedItem(item)
+    }
+  }
+
+  const handleCloseForm = () => {
+    setActiveForm(null)
+    setSelectedItem(null)
+  }
+
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🚨 Denuncias</h1>
       
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
-        <div className="flex gap-2">
-          <Input type="text" placeholder="Buscar denuncia..." className="flex-grow" />
-          <CollapsibleTrigger asChild>
-            <Button variant="outline">
-              Filtrar
-            </Button>
-          </CollapsibleTrigger>
+         <div className="flex gap-2">
+            <Input type="text" placeholder="Buscar denuncia..." className="flex-grow" />
+            <CollapsibleTrigger asChild>
+              <Button variant="outline">
+                Filtrar
+              </Button>
+            </CollapsibleTrigger>
         </div>
 
         <CollapsibleContent>
@@ -113,7 +130,7 @@ export default function DenunciasSection() {
                 </TableCell>
                 <TableCell className="flex flex-wrap gap-2">
                   <Button size="sm" variant="outline">Detalle</Button>
-                  <Button size="sm" variant="secondary">Cambiar Estado</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
                   <Button size="sm" variant="ghost">Archivos</Button>
                 </TableCell>
               </TableRow>
@@ -121,6 +138,12 @@ export default function DenunciasSection() {
           </TableBody>
         </Table>
       </Card>
+       <DynamicForm 
+        formConfig={activeForm}
+        isOpen={!!activeForm}
+        onClose={handleCloseForm}
+        item={selectedItem}
+      />
     </div>
   )
 }

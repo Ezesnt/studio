@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from "react"
@@ -27,31 +26,48 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
+import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
+import { formMappings } from "@/lib/forms-mapping"
 
 const users = [
-  { name: "Maria Lopez", dni: "30555666", email: "maria@gmail.com", status: "Activo" },
-  { name: "Juan Martínez", dni: "40111222", email: "juan@mail.com", status: "Inactivo" },
+  { id: 1, nombre: "Maria", apellido: "Lopez", domicilio: "Calle Falsa 123", telefono: "123456789", name: "Maria Lopez", dni: "30555666", email: "maria@gmail.com", status: "Activo", categoria: "admin" },
+  { id: 2, nombre: "Juan", apellido: "Martínez", domicilio: "Av. Siempre Viva 742", telefono: "987654321", name: "Juan Martínez", dni: "40111222", email: "juan@mail.com", status: "Inactivo", categoria: "ciudadano" },
 ]
 
 export default function UsuariosSection() {
   const [isOpen, setIsOpen] = useState(false)
+  const [activeForm, setActiveForm] = useState<FormConfig | null>(null)
+  const [selectedItem, setSelectedItem] = useState<any>(null)
+
+  const handleFormOpen = (formId: string, item?: any) => {
+    const formConfig = formMappings.usuarios.forms.find(f => f.id === formId)
+    if (formConfig) {
+      setActiveForm(formConfig)
+      setSelectedItem(item)
+    }
+  }
+
+  const handleCloseForm = () => {
+    setActiveForm(null)
+    setSelectedItem(null)
+  }
 
   return (
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">👤 Usuarios</h1>
       
       <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            placeholder="Buscar usuario por nombre, DNI, etc..."
-            className="flex-grow"
-          />
-          <CollapsibleTrigger asChild>
-            <Button variant="outline">
-              Filtrar
-            </Button>
-          </CollapsibleTrigger>
+         <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="Buscar usuario por nombre, DNI, etc..."
+              className="flex-grow"
+            />
+            <CollapsibleTrigger asChild>
+              <Button variant="outline">
+                Filtrar
+              </Button>
+            </CollapsibleTrigger>
         </div>
 
         <CollapsibleContent>
@@ -110,7 +126,7 @@ export default function UsuariosSection() {
           </TableHeader>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user.dni}>
+              <TableRow key={user.id}>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.dni}</TableCell>
                 <TableCell>{user.email}</TableCell>
@@ -118,8 +134,8 @@ export default function UsuariosSection() {
                   <Badge variant={user.status === "Activo" ? "default" : "destructive"} className={user.status === "Activo" ? "bg-green-600" : ""}>{user.status}</Badge>
                 </TableCell>
                 <TableCell className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline">Editar</Button>
-                  <Button size="sm" variant="secondary">Activar/Desactivar</Button>
+                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('editUserForm', user)}>Editar</Button>
+                  <Button size="sm" variant="secondary" onClick={() => handleFormOpen('toggleUserStatusForm', user)}>Activar/Desactivar</Button>
                   <Button size="sm" variant="ghost">Animales</Button>
                   <Button size="sm" variant="ghost">Turnos</Button>
                   <Button size="sm" variant="ghost">Denuncias</Button>
@@ -129,6 +145,13 @@ export default function UsuariosSection() {
           </TableBody>
         </Table>
       </Card>
+      
+      <DynamicForm 
+        formConfig={activeForm}
+        isOpen={!!activeForm}
+        onClose={handleCloseForm}
+        item={selectedItem}
+      />
     </div>
   )
 }
