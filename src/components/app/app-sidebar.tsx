@@ -44,7 +44,14 @@ const navItems = [
 ]
 
 export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps) {
-  const { state } = useSidebar()
+  const { setOpenMobile, isMobile } = useSidebar()
+
+  const handleItemClick = (sectionId: string) => {
+    setActiveSection(sectionId)
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }
 
   return (
     <Sidebar className="border-r border-border/80">
@@ -64,7 +71,7 @@ export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps)
           {navItems.map((item) => (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => handleItemClick(item.id)}
                 isActive={activeSection === item.id}
                 className="justify-start"
                 tooltip={item.label}
