@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from "react"
@@ -36,13 +37,15 @@ export default function AdopcionesSection() {
   const [selectedItem, setSelectedItem] = useState<any>(null)
 
   const handleFormOpen = (formId: string, item?: any) => {
-    let formConfig
+    let formConfig;
     if (formId === 'createAdoptionForm') {
-      // Re-route to the animal creation form as per mapping comment
       formConfig = formMappings.animales.forms.find(f => f.id === 'createAnimalForm');
       if (formConfig) {
         formConfig = {...formConfig, title: "Publicar Animal para Adopción" }
       }
+    } else if (formId === 'assignOwnerForm') {
+      // Find the form in the animales section since it's shared
+      formConfig = formMappings.animales.forms.find(f => f.id === formId);
     } else {
       formConfig = formMappings.adopciones.forms.find(f => f.id === formId)
     }
@@ -91,6 +94,9 @@ export default function AdopcionesSection() {
                   <TableCell className="flex flex-wrap gap-2">
                     <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAdoptionForm', adopcion)}>Editar</Button>
                     <Button size="sm" variant="destructive" onClick={() => handleFormOpen('endAdoptionForm', adopcion)}>Eliminar</Button>
+                     {adopcion.status === 'Disponible' && (
+                        <Button size="sm" variant="ghost" onClick={() => handleFormOpen('assignOwnerForm', adopcion)}>Asignar Propietario</Button>
+                     )}
                     {adopcion.status === "Disponible" ? (
                       <Button size="sm">Publicar</Button>
                     ) : (
