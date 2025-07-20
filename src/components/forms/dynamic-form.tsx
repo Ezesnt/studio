@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from "react"
@@ -36,6 +37,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Calendar, Syringe, Paperclip, FileText, Image as ImageIcon } from "lucide-react"
+import { Combobox } from "@/components/ui/combobox"
 
 export interface FormFieldConfig {
   name: string
@@ -51,6 +53,7 @@ export interface FormFieldConfig {
     | "email"
     | "url"
     | "hidden"
+    | "combobox"
   placeholder?: string
   required?: boolean
   options?: { value: string; text: string }[]
@@ -95,6 +98,7 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
         case "text":
         case "textarea":
         case "select":
+        case "combobox":
         case "file":
         case "datetime-local":
         case "url":
@@ -218,7 +222,7 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
 
   const renderField = (fieldConfig: FormFieldConfig, formField: any) => {
     const { name, label, type, placeholder, options, required, omitInView } = fieldConfig;
-    const isReadOnly = formConfig.id === 'viewAnimalDetailsForm' || formConfig.id === 'viewComplaintDetailsForm' || formConfig.id === 'viewAppointmentDetailsForm';
+    const isReadOnly = formConfig.id === 'viewComplaintDetailsForm'
     if (isReadOnly && omitInView) return null;
     
     const fieldLabel = required ? `${label} *` : label;
@@ -245,6 +249,15 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                   ))}
                 </SelectContent>
               </Select>
+            ) : type === "combobox" && options ? (
+              <Combobox
+                options={options}
+                value={formField.value}
+                onChange={formField.onChange}
+                placeholder={placeholder}
+                searchPlaceholder="Buscar..."
+                disabled={isReadOnly}
+              />
             ) : type === "checkbox" ? (
               <div className="flex items-center space-x-2">
                 <Checkbox
@@ -280,7 +293,7 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
     onClose();
   }
 
-  const isReadOnlyForm = formConfig.id === 'viewAnimalDetailsForm' || formConfig.id === 'viewComplaintDetailsForm' || formConfig.id === 'viewAppointmentDetailsForm';
+  const isReadOnlyForm = formConfig.id === 'viewComplaintDetailsForm';
 
   const renderAttachments = () => {
     if (formConfig.id === 'viewComplaintDetailsForm' && item?.archivos?.length > 0) {
