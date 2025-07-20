@@ -104,6 +104,19 @@ export const formMappings = {
     "description": "Formularios para gestionar denuncias.",
     "forms": [
       {
+        "id": "viewComplaintDetailsForm",
+        "triggerButtonLabel": "Detalle",
+        "title": "Detalle de la Denuncia",
+        "fields": [
+          { "name": "id", "label": "ID Denuncia", "type": "text" },
+          { "name": "denunciante", "label": "Denunciante", "type": "text" },
+          { "name": "ubicacion", "label": "Ubicación", "type": "text" },
+          { "name": "tipo", "label": "Tipo de denuncia", "type": "text" },
+          { "name": "descripcion", "label": "Descripción", "type": "textarea" },
+          { "name": "estado", "label": "Estado", "type": "text" }
+        ]
+      },
+      {
         "id": "changeComplaintStatusForm",
         "triggerButtonLabel": "Cambiar Estado",
         "title": "Actualizar Estado de la Denuncia",

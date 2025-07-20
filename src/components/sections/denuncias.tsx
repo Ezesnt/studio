@@ -30,9 +30,9 @@ import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
 
 const denuncias = [
-  { id: "456", denunciante: "Pedro Díaz", ubicacion: "Centro", estado: "Pendiente" },
-  { id: "457", denunciante: "Ana Ruiz", ubicacion: "Sur", estado: "Resuelto" },
-  { id: "458", denunciante: "Maria Lopez", ubicacion: "Norte", estado: "En Proceso" },
+  { id: "456", denunciante: "Pedro Díaz", ubicacion: "Centro", estado: "Pendiente", descripcion: "Perro en mal estado en la calle principal.", tipo: "maltrato" },
+  { id: "457", denunciante: "Ana Ruiz", ubicacion: "Sur", estado: "Resuelto", descripcion: "Gato abandonado en un parque.", tipo: "abandono" },
+  { id: "458", denunciante: "Maria Lopez", ubicacion: "Norte", estado: "En Proceso", descripcion: "Venta ilegal de animales exóticos.", tipo: "venta_ilegal" },
 ]
 
 const getStatusVariant = (status: string) => {
@@ -80,50 +80,52 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🚨 Denuncias</h1>
       
-      <div className="flex gap-2">
-        <Input 
-          type="text" 
-          placeholder="Buscar por denunciante..." 
-          className="flex-grow" 
-          value={filterText}
-          onChange={(e) => setFilterText(e.target.value)}
-        />
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-          <CollapsibleTrigger asChild>
-            <Button variant="outline">
-              Filtrar
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <Card className="absolute mt-2 z-10">
-              <CardContent className="pt-6">
-                <form>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="filtroEstadoDenuncia">Estado</Label>
-                      <Select>
-                        <SelectTrigger id="filtroEstadoDenuncia">
-                          <SelectValue placeholder="Todos" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="todos">Todos</SelectItem>
-                          <SelectItem value="pendiente">Pendiente</SelectItem>
-                          <SelectItem value="resuelto">Resuelto</SelectItem>
-                          <SelectItem value="en_proceso">En proceso</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="col-span-1 md:col-start-3 self-end">
-                      <Button type="submit" className="w-full">
-                        Aplicar filtro
-                      </Button>
-                    </div>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
+      <div className="flex items-center justify-between">
+          <div className="flex gap-2 flex-grow">
+            <Input 
+              type="text" 
+              placeholder="Buscar por denunciante..." 
+              className="flex-grow" 
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+            />
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline">
+                  Filtrar
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <Card className="absolute mt-2 z-10">
+                  <CardContent className="pt-6">
+                    <form>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <Label htmlFor="filtroEstadoDenuncia">Estado</Label>
+                          <Select>
+                            <SelectTrigger id="filtroEstadoDenuncia">
+                              <SelectValue placeholder="Todos" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="todos">Todos</SelectItem>
+                              <SelectItem value="pendiente">Pendiente</SelectItem>
+                              <SelectItem value="resuelto">Resuelto</SelectItem>
+                              <SelectItem value="en_proceso">En proceso</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="col-span-1 md:col-start-3 self-end">
+                          <Button type="submit" className="w-full">
+                            Aplicar filtro
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </CardContent>
+                </Card>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
       </div>
 
       <Card>
@@ -147,7 +149,7 @@ export default function DenunciasSection({ initialFilter }: DenunciasSectionProp
                   <Badge variant={getStatusVariant(denuncia.estado)} className={denuncia.estado === 'Resuelto' ? 'bg-green-600' : ''}>{denuncia.estado}</Badge>
                 </TableCell>
                 <TableCell className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline">Detalle</Button>
+                  <Button size="sm" variant="outline" onClick={() => handleFormOpen('viewComplaintDetailsForm', denuncia)}>Detalle</Button>
                   <Button size="sm" variant="secondary" onClick={() => handleFormOpen('changeComplaintStatusForm', denuncia)}>Cambiar Estado</Button>
                   <Button size="sm" variant="ghost">Archivos</Button>
                 </TableCell>
