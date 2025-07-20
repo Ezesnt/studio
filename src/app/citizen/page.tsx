@@ -3,7 +3,7 @@
 
 import React, { useState, type ReactNode } from "react"
 import Image from "next/image"
-import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog, Home, CheckCircle, ShieldCheck, Syringe } from "lucide-react"
+import { Moon, Sun, User, LogOut, Bell, PanelLeft, Dog, Clock, Siren, UserCog, Home, CheckCircle, ShieldCheck, Syringe, Heart, Calendar, Link as LinkIcon, Info } from "lucide-react"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { CitizenSidebar } from "@/components/app/citizen-sidebar"
 import {
@@ -24,6 +24,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import { FaqBot } from "@/components/app/faq-bot"
 import { citizenFaqs } from "@/lib/faq-data"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 
 const userInfo = {
     "activo": true,
@@ -44,8 +45,8 @@ const preturnos = [
   { id: 102, estado: "Confirmado", fechaSolicitada: "2025-08-15", fechaConfirmada: "2025-08-15 10:00", profesional: "Dr. Canino", instrucciones: "Traer al animal en ayunas." }
 ];
 const animales = [
-  { id: 1, nombre: "Firulais", especie: "Perro", edad: "5 años", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}], patentado: true, fecha_vencimiento_patente: "2026-07-20" },
-  { id: 2, nombre: "Mishi", especie: "Gato", edad: "3 años", historial_clinico: [{fecha: "2024-09-01", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}], patentado: false, fecha_vencimiento_patente: null }
+  { id: 1, name: "Firulais", species: "Perro", age: "5 años", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}], patentado: true, fecha_vencimiento_patente: "2026-07-20" },
+  { id: 2, name: "Mishi", species: "Gato", age: "3 años", historial_clinico: [{fecha: "2024-09-01", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}], patentado: false, fecha_vencimiento_patente: null }
 ];
 const denuncias = [
   { id: 201, tipo: "maltrato", barrio: "Centro", direccion: "Calle Falsa 123", fecha: "2025-07-10", estado: "Pendiente", descripcion: "Perro callejero agresivo" },
@@ -58,8 +59,41 @@ const notificaciones = [
   "Nueva denuncia recibida en barrio Centro"
 ];
 const adopciones = [
-  { id: 1, name: "Rex", species: "Perro", age: "3 años", status: "Disponible", detalle: "Amigable y juguetón", url: "" },
-  { id: 2, name: "Luna", species: "Gato", age: "1 año", status: "Adoptado", detalle: "Le gusta dormir mucho", url: "" },
+    {
+        id: 1,
+        nombre: "Rex",
+        especie: "Perro",
+        raza: "Labrador",
+        edad: "3 años",
+        sexo: "Macho",
+        color: "Dorado",
+        tamanio: "Grande",
+        observaciones: "Le encanta jugar a la pelota y es muy bueno con los niños.",
+        detalle: "Se entrega vacunado y desparasitado. Busca un hogar con patio.",
+        url_contacto: "https://facebook.com/adoptaunrex",
+        fecha_publicacion: "2025-07-20",
+        fotos: [
+            { "url": "https://placehold.co/600x400.png", "hint": "dog playing" },
+            { "url": "https://placehold.co/600x400.png", "hint": "happy dog" },
+        ]
+    },
+    {
+        id: 2,
+        nombre: "Luna",
+        especie: "Gato",
+        raza: "Siamés",
+        edad: "1 año",
+        sexo: "Hembra",
+        color: "Blanco y Crema",
+        tamanio: "Pequeño",
+        observaciones: "Es muy tranquila y le gusta dormir en el sol.",
+        detalle: "Ideal para departamento. Es muy cariñosa una vez que entra en confianza.",
+        url_contacto: "https://facebook.com/adoptaunaluna",
+        fecha_publicacion: "2025-07-18",
+        fotos: [
+             { "url": "https://placehold.co/600x400.png", "hint": "cat sleeping" },
+        ]
+    },
 ]
 const getStatusVariant = (status: string) => {
   switch (status) {
@@ -170,21 +204,25 @@ function InfoDashboardSection() {
 
 function ProfileSection({ onFormOpen }: { onFormOpen: (formId: string, item: any) => void }) {
   return (
-    <div className="space-y-4">
-      <h1 className="flex items-center gap-3"><UserCog /> Mis Datos</h1>
+    <div className="space-y-6">
+      <h1 className="flex items-center gap-3 text-3xl font-bold"><UserCog /> Mis Datos</h1>
       <Card>
         <CardHeader>
           <CardTitle>Información Personal</CardTitle>
+          <CardDescription>Revisa y actualiza tus datos personales.</CardDescription>
         </CardHeader>
-        <CardContent className="pt-2 space-y-2">
-          <p><strong>Nombre:</strong> {userInfo.nombre} {userInfo.apellido}</p>
-          <p><strong>DNI:</strong> {userInfo.dni}</p>
-          <p><strong>Email:</strong> {userInfo.email}</p>
-          <p><strong>Domicilio:</strong> {userInfo.domicilio}</p>
-          <p><strong>Teléfono:</strong> {userInfo.telefono}</p>
-          <p><strong>Barrio:</strong> {userInfo.barrio}</p>
-          <Button className="mt-4" onClick={() => onFormOpen('editCitizenUserForm', userInfo)}>Editar Información</Button>
+        <CardContent className="pt-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+          <div><p className="font-semibold">Nombre:</p> <p className="text-muted-foreground">{userInfo.nombre}</p></div>
+          <div><p className="font-semibold">Apellido:</p> <p className="text-muted-foreground">{userInfo.apellido}</p></div>
+          <div><p className="font-semibold">DNI:</p> <p className="text-muted-foreground">{userInfo.dni}</p></div>
+          <div><p className="font-semibold">Email:</p> <p className="text-muted-foreground">{userInfo.email}</p></div>
+          <div><p className="font-semibold">Domicilio:</p> <p className="text-muted-foreground">{userInfo.domicilio}</p></div>
+          <div><p className="font-semibold">Teléfono:</p> <p className="text-muted-foreground">{userInfo.telefono}</p></div>
+          <div><p className="font-semibold">Barrio:</p> <p className="text-muted-foreground">{userInfo.barrio}</p></div>
         </CardContent>
+         <CardContent>
+           <Button onClick={() => onFormOpen('editCitizenUserForm', userInfo)}>Editar Información</Button>
+         </CardContent>
       </Card>
     </div>
   );
@@ -233,8 +271,8 @@ function PreturnosSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
 function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
   const [filterText, setFilterText] = useState("");
   const filteredAnimals = animales.filter(animal =>
-    animal.nombre.toLowerCase().includes(filterText.toLowerCase()) ||
-    animal.especie.toLowerCase().includes(filterText.toLowerCase())
+    animal.name.toLowerCase().includes(filterText.toLowerCase()) ||
+    animal.species.toLowerCase().includes(filterText.toLowerCase())
   );
   return (
     <div className="space-y-6">
@@ -263,9 +301,9 @@ function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?
             <TableBody>
               {filteredAnimals.map(animal => (
                 <TableRow key={animal.id}>
-                  <TableCell>{animal.nombre}</TableCell>
-                  <TableCell>{animal.especie}</TableCell>
-                  <TableCell>{animal.edad}</TableCell>
+                  <TableCell>{animal.name}</TableCell>
+                  <TableCell>{animal.species}</TableCell>
+                  <TableCell>{animal.age}</TableCell>
                   <TableCell>
                     {animal.patentado ? (
                        <Badge variant="default" className="bg-green-600">
@@ -330,57 +368,63 @@ function DenunciasSection({ onFormOpen }: { onFormOpen: (formId: string, item?: 
 }
 
 function AdopcionesSection({ onFormOpen }: { onFormOpen: (formId: string, item?: any) => void }) {
-    const [filterText, setFilterText] = useState("");
-    const filteredAdoptions = adopciones.filter(adopcion =>
-        adopcion.name.toLowerCase().includes(filterText.toLowerCase()) ||
-        adopcion.species.toLowerCase().includes(filterText.toLowerCase())
-    );
+  const [filterText, setFilterText] = useState("");
+  const filteredAdoptions = adopciones.filter(adopcion =>
+      adopcion.nombre.toLowerCase().includes(filterText.toLowerCase()) ||
+      adopcion.especie.toLowerCase().includes(filterText.toLowerCase())
+  );
 
-    return (
-        <div className="space-y-6">
-            <h1 className="flex items-center gap-3"><Home /> Adopciones</h1>
-            <p className="text-muted-foreground">Explora los animales disponibles para adopción.</p>
-            <div className="flex flex-col md:flex-row gap-2">
-                <Input
-                    placeholder="Buscar por nombre o especie..."
-                    className="flex-grow"
-                    value={filterText}
-                    onChange={(e) => setFilterText(e.target.value)}
-                />
-            </div>
-            <Card>
-                <div className="relative w-full overflow-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nombre</TableHead>
-                                <TableHead>Especie</TableHead>
-                                <TableHead>Edad</TableHead>
-                                <TableHead>Estado</TableHead>
-                                <TableHead>Acciones</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredAdoptions.map((adopcion) => (
-                                <TableRow key={adopcion.id}>
-                                    <TableCell>{adopcion.name}</TableCell>
-                                    <TableCell>{adopcion.species}</TableCell>
-                                    <TableCell>{adopcion.age}</TableCell>
-                                    <TableCell>
-                                        <Badge variant={getStatusVariant(adopcion.status)} className={adopcion.status === 'Disponible' ? 'bg-green-600' : ''}>{adopcion.status}</Badge>
-                                    </TableCell>
-                                    <TableCell className="flex flex-wrap gap-2">
-                                        <Button size="sm" variant="outline" onClick={() => onFormOpen('viewAnimalDetailsForm', adopcion)}>Ver Detalle</Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
-            </Card>
-        </div>
-    );
+  const handleContact = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  return (
+      <div className="space-y-6">
+          <h1 className="flex items-center gap-3"><Heart /> Adopciones</h1>
+          <p className="text-muted-foreground">Explora los animales disponibles para adopción. ¡Podrías encontrar a tu próximo mejor amigo!</p>
+          <div className="flex flex-col md:flex-row gap-2">
+              <Input
+                  placeholder="Buscar por nombre o especie..."
+                  className="flex-grow"
+                  value={filterText}
+                  onChange={(e) => setFilterText(e.target.value)}
+              />
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredAdoptions.map((adopcion) => (
+                  <Card key={adopcion.id} className="overflow-hidden flex flex-col">
+                      <div className="relative">
+                          <Image
+                              src={adopcion.fotos[0].url}
+                              alt={`Foto de ${adopcion.nombre}`}
+                              width={400}
+                              height={300}
+                              className="object-cover w-full h-48"
+                              data-ai-hint={adopcion.fotos[0].hint}
+                          />
+                      </div>
+                      <CardHeader>
+                          <CardTitle>{adopcion.nombre}</CardTitle>
+                          <CardDescription>{adopcion.especie} - {adopcion.edad}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex-grow">
+                          <p className="text-muted-foreground line-clamp-2">{adopcion.detalle}</p>
+                      </CardContent>
+                      <CardContent className="flex flex-col sm:flex-row gap-2">
+                         <Button className="w-full" variant="outline" onClick={() => onFormOpen('viewAdoptionDetailsForm', adopcion)}>
+                            <Info className="mr-2" /> Ver Detalle
+                         </Button>
+                         <Button className="w-full" onClick={() => handleContact(adopcion.url_contacto)}>
+                           <LinkIcon className="mr-2" /> Contactar
+                         </Button>
+                      </CardContent>
+                  </Card>
+              ))}
+          </div>
+      </div>
+  );
 }
+
 
 function NotificacionesSection() {
   return (
@@ -426,7 +470,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onNavigate('perfil')}>
+            <DropdownMenuItem onClick={() => onNavigate('dashboard')}>
               <User className="mr-2 h-4 w-4" />
               <span>Ver Perfil</span>
             </DropdownMenuItem>
@@ -457,7 +501,7 @@ function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
 
 
 export default function CitizenPage() {
-  const [activeSection, setActiveSection] = useState("dashboard")
+  const [activeSection, setActiveSection] = useState("adopciones")
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [activeForm, setActiveForm] = useState<FormConfig | null>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -473,6 +517,7 @@ export default function CitizenPage() {
       ...formMappings.turnos.forms,
       ...formMappings.animales.forms,
       ...formMappings.denuncias.forms,
+      ...formMappings.adopciones.forms,
     ];
     const formConfig = citizenForms.find(f => f.id === formId);
     if (formConfig) {
@@ -489,7 +534,7 @@ export default function CitizenPage() {
   const renderSection = (): ReactNode => {
     switch (activeSection) {
       case "dashboard":
-        return <InfoDashboardSection />
+        return <ProfileSection onFormOpen={handleFormOpen} />
       case "perfil":
         return <ProfileSection onFormOpen={handleFormOpen} />
       case "preturnos":
@@ -503,7 +548,7 @@ export default function CitizenPage() {
       case "notificaciones":
         return <NotificacionesSection />
       default:
-        return <InfoDashboardSection />
+        return <AdopcionesSection onFormOpen={handleFormOpen} />
     }
   }
 

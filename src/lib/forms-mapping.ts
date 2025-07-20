@@ -70,8 +70,8 @@ export const formMappings = {
         "endpoint": "PUT /adopciones/actualizar/:id",
         "fields": [
           { "name": "id_propietario", "label": "Propietario", "type": "combobox", "placeholder": "Selecciona un propietario", "required": true, "options": [
-              { "value": "1", "text": "Maria Lopez (30.555.666)" }, 
-              { "value": "2", "text": "Juan Martínez (40.111.222)" }
+              { "value": "2", "text": "Maria Lopez (30.555.666)" }, 
+              { "value": "3", "text": "Juan Martínez (40.111.222)" }
             ] 
           }
         ]
@@ -240,11 +240,15 @@ export const formMappings = {
         "id": "solicitarPreturnoForm",
         "title": "Solicitar Pre-turno",
         "fields": [
+          { "name": "id_animal", "label": "Selecciona tu animal", "type": "select", "options": [
+              {"value": "1", "text": "Firulais (Perro)"}, 
+              {"value": "2", "text": "Mishi (Gato)"}
+            ], "required": true 
+          },
           { "name": "motivo", "label": "Tipo de Turno", "type": "select", "options": [
               {"value": "castracion_canino_macho", "text": "Castración Canino Macho"}, {"value": "castracion_canino_hembra", "text": "Castración Canino Hembra"}, {"value": "castracion_felino_macho", "text": "Castración Felino Macho"}, {"value": "castracion_felino_hembra", "text": "Castración Felino Hembra"}, {"value": "vacunacion_antirrabica", "text": "Vacunación Antirrábica"}, {"value": "desparasitacion", "text": "Desparasitación"}, {"value": "consulta_veterinaria_primaria", "text": "Consulta Veterinaria Primaria"}, {"value": "identificacion_microchip", "text": "Identificación por Microchip"}, {"value": "tratamiento_sarna", "text": "Tratamiento de Sarna"}, {"value": "otro", "text": "Otro"}
             ], "required": true 
-          },
-          { "name": "fecha", "label": "Fecha deseada", "type": "date", "required": true }
+          }
         ]
       },
       {
@@ -261,6 +265,11 @@ export const formMappings = {
   "adopciones": {
     "description": "Formularios para la gestión de publicaciones de adopción.",
     "forms": [
+      {
+        "id": "viewAdoptionDetailsForm",
+        "title": "Detalles de la Adopción",
+        "comment": "Este formulario es especial, renderiza una vista detallada del animal en adopción."
+      },
       {
         "id": "createAdoptionForm",
         "triggerButtonLabel": "Agregar Adopción",
@@ -292,5 +301,3 @@ export const formMappings = {
     ]
   }
 }
-
-    

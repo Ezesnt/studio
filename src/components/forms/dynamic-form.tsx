@@ -34,10 +34,12 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card"
 import { Badge } from "../ui/badge"
-import { Calendar, Syringe, Paperclip, FileText, Image as ImageIcon } from "lucide-react"
+import { Calendar, Syringe, Paperclip, FileText, Image as ImageIcon, Link as LinkIcon } from "lucide-react"
 import { Combobox } from "@/components/ui/combobox"
+import Image from "next/image"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel"
 
 export interface FormFieldConfig {
   name: string
@@ -214,6 +216,73 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
           </ScrollArea>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>Cerrar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  // Special case for adoption details
+  if (formConfig.id === 'viewAdoptionDetailsForm' && item) {
+    const handleContact = (url: string) => {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-3xl">{item.nombre}</DialogTitle>
+            <DialogDescription>
+              Publicado el {new Date(item.fecha_publicacion).toLocaleDateString()}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[70vh] pr-4">
+            <div className="space-y-6 py-4">
+               {item.fotos && item.fotos.length > 0 && (
+                <Carousel className="w-full">
+                    <CarouselContent>
+                    {item.fotos.map((foto: any, index: number) => (
+                        <CarouselItem key={index}>
+                            <Image
+                                src={foto.url}
+                                alt={`Foto de ${item.nombre} ${index + 1}`}
+                                width={600}
+                                height={400}
+                                className="w-full h-auto object-cover rounded-md"
+                                data-ai-hint={foto.hint}
+                            />
+                        </CarouselItem>
+                    ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
+               )}
+              <Card>
+                <CardContent className="pt-6 grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                    <div><p className="font-semibold">Especie:</p> <p className="text-muted-foreground">{item.especie}</p></div>
+                    <div><p className="font-semibold">Raza:</p> <p className="text-muted-foreground">{item.raza}</p></div>
+                    <div><p className="font-semibold">Edad:</p> <p className="text-muted-foreground">{item.edad}</p></div>
+                    <div><p className="font-semibold">Sexo:</p> <p className="text-muted-foreground">{item.sexo}</p></div>
+                    <div><p className="font-semibold">Color:</p> <p className="text-muted-foreground">{item.color}</p></div>
+                    <div><p className="font-semibold">Tamaño:</p> <p className="text-muted-foreground">{item.tamanio}</p></div>
+                </CardContent>
+              </Card>
+              <div className="space-y-2">
+                <h3 className="font-semibold">Detalles de Adopción</h3>
+                <p className="text-muted-foreground text-sm">{item.detalle}</p>
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-semibold">Observaciones</h3>
+                <p className="text-muted-foreground text-sm">{item.observaciones}</p>
+              </div>
+            </div>
+          </ScrollArea>
+          <DialogFooter className="sm:justify-between gap-2">
+            <Button type="button" variant="outline" onClick={onClose}>Cerrar</Button>
+            <Button onClick={() => handleContact(item.url_contacto)}>
+                <LinkIcon className="mr-2"/> Contactar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
