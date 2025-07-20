@@ -101,3 +101,9 @@
     @apply font-headline text-xl font-medium;
   }
 }
+
+@layer components {
+  .light .btn-default, .light .btn-secondary, .light .btn-destructive {
+    @apply border border-border;
+  }
+}
