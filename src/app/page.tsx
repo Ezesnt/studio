@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, type ReactNode } from "react"
-import { Moon, Sun, User, LogOut } from "lucide-react"
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { Moon, Sun, User, LogOut, Bell, PanelLeft } from "lucide-react"
+import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app/app-sidebar"
 import DashboardSection from "@/components/sections/dashboard"
 import AnimalesSection from "@/components/sections/animales"
@@ -28,6 +28,60 @@ type SectionFilter = {
   type: string;
   value: any;
 }
+
+function Header({ isDarkMode, setIsDarkMode, onNavigate }) {
+  const { toggleSidebar } = useSidebar()
+  return (
+    <header className="flex h-16 items-center justify-between border-b border-border/80 px-4 md:px-6">
+      <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleSidebar}>
+        <PanelLeft className="size-5" />
+        <span className="sr-only">Abrir menú</span>
+      </Button>
+      <div className="flex-1" />
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => onNavigate('notificaciones')}>
+          <Bell className="size-5" />
+          <span className="sr-only">Ver notificaciones</span>
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <User className="size-5" />
+              <span className="sr-only">Abrir menú de usuario</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Ver Perfil</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Cerrar Sesión</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
+                  {isDarkMode ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
+                  <span>Modo {isDarkMode ? "Oscuro" : "Claro"}</span>
+                </div>
+                <Switch
+                  checked={isDarkMode}
+                  onCheckedChange={setIsDarkMode}
+                  aria-label="Toggle dark mode"
+                />
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  )
+}
+
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("dashboard")
@@ -76,44 +130,9 @@ export default function Home() {
           activeSection={activeSection}
           setActiveSection={handleNavigateToSection}
         />
-        <main className="flex-1 flex flex-col bg-background rounded-l-2xl shadow-2xl">
-          <header className="flex h-16 items-center justify-end border-b border-border/80 px-6">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <User className="size-5" />
-                  <span className="sr-only">Abrir menú de usuario</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Ver Perfil</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Cerrar Sesión</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center">
-                      {isDarkMode ? <Moon className="mr-2 h-4 w-4" /> : <Sun className="mr-2 h-4 w-4" />}
-                      <span>Modo {isDarkMode ? "Oscuro" : "Claro"}</span>
-                    </div>
-                    <Switch
-                      checked={isDarkMode}
-                      onCheckedChange={setIsDarkMode}
-                      aria-label="Toggle dark mode"
-                    />
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </header>
-          <div className="flex-1 p-6 lg:p-8 h-full overflow-y-auto">
+        <main className="flex-1 flex flex-col bg-background md:rounded-l-2xl md:shadow-2xl">
+          <Header isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} onNavigate={handleNavigateToSection} />
+          <div className="flex-1 p-4 md:p-6 lg:p-8 h-full overflow-y-auto">
             {renderSection()}
           </div>
         </main>

@@ -2,7 +2,6 @@
 
 import React from "react"
 import {
-  Bell,
   Clock,
   Dog,
   FileText,
@@ -39,7 +38,6 @@ const navItems = [
   { id: "turnos", label: "Turnos", icon: Clock },
   { id: "adopciones", label: "Adopciones", icon: Home },
   { id: "reportes", label: "Reportes", icon: FileText },
-  { id: "notificaciones", label: "Notificaciones", icon: Bell },
   { id: "mapa-interactivo", label: "Mapa Interactivo", icon: Map },
 ]
 
@@ -62,9 +60,11 @@ export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps)
             Zoonosis Central
           </h2>
         </div>
-        <SidebarTrigger asChild className="group-data-[collapsible=icon]:hidden">
-          <Button variant="ghost" size="icon" />
-        </SidebarTrigger>
+        <div className="group-data-[collapsible=icon]:hidden">
+          <SidebarTrigger asChild>
+             <Button variant="ghost" size="icon" />
+          </SidebarTrigger>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
