@@ -43,8 +43,8 @@ const preturnos = [
   { id: 102, estado: "Confirmado", fechaSolicitada: "2025-08-15", fechaConfirmada: "2025-08-15 10:00", profesional: "Dr. Canino", instrucciones: "Traer al animal en ayunas." }
 ];
 const animales = [
-  { id: 1, nombre: "Firulais", especie: "Perro", edad: "5 años", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] },
-  { id: 2, nombre: "Mishi", especie: "Gato", edad: "3 años", historial_clinico: [{fecha: "2024-09-01", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] }
+  { id: 1, nombre: "Firulais", especie: "Perro", edad: "5 años", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}], patentado: true, fecha_vencimiento_patente: "2026-07-20" },
+  { id: 2, nombre: "Mishi", especie: "Gato", edad: "3 años", historial_clinico: [{fecha: "2024-09-01", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}], patentado: false, fecha_vencimiento_patente: null }
 ];
 const denuncias = [
   { id: 201, tipo: "maltrato", barrio: "Centro", direccion: "Calle Falsa 123", fecha: "2025-07-10", estado: "Pendiente", descripcion: "Perro callejero agresivo" },
@@ -80,12 +80,9 @@ const getStatusVariant = (status: string) => {
 function ProfileSection({ onFormOpen }: { onFormOpen: (formId: string, item: any) => void }) {
   return (
     <div className="space-y-4">
-      <h1 className="flex items-center gap-3"><UserCog /> Información Personal</h1>
+      <h1 className="flex items-center gap-3"><UserCog /> Mis Datos</h1>
       <Card>
-        <CardHeader>
-          <CardTitle>Mis Datos</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="pt-6 space-y-2">
           <p><strong>Nombre:</strong> {userInfo.nombre} {userInfo.apellido}</p>
           <p><strong>DNI:</strong> {userInfo.dni}</p>
           <p><strong>Email:</strong> {userInfo.email}</p>
@@ -165,6 +162,7 @@ function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?
                 <TableHead>Nombre</TableHead>
                 <TableHead>Especie</TableHead>
                 <TableHead>Edad</TableHead>
+                <TableHead>Patente</TableHead>
                 <TableHead>Acciones</TableHead>
               </TableRow>
             </TableHeader>
@@ -174,6 +172,15 @@ function MisAnimalesSection({ onFormOpen }: { onFormOpen: (formId: string, item?
                   <TableCell>{animal.nombre}</TableCell>
                   <TableCell>{animal.especie}</TableCell>
                   <TableCell>{animal.edad}</TableCell>
+                  <TableCell>
+                    {animal.patentado ? (
+                       <Badge variant="default" className="bg-green-600">
+                        Patentado (Vence: {animal.fecha_vencimiento_patente})
+                       </Badge>
+                    ) : (
+                      <Badge variant="secondary">No Patentado</Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="flex flex-wrap gap-2">
                     <Button size="sm" variant="outline" onClick={() => onFormOpen('viewAnimalHealthBookForm', animal)}>Libreta</Button>
                     <Button size="sm" variant="secondary" onClick={() => onFormOpen('viewAnimalDetailsForm', animal)}>Ver detalle</Button>
