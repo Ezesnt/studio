@@ -80,11 +80,6 @@ export const formMappings = {
           { "name": "edad", "label": "Edad (años)", "type": "number", "min": 0, "required": true }
         ]
       },
-      {
-        "id": "viewAnimalHealthBookForm",
-        "title": "Libreta Sanitaria",
-        "confirmationText": "Libreta de Firulais: Vacuna antirrábica: 2024-07-10. Desparasitación: 2025-01-15. Último control: 2025-06-20"
-      },
        {
         "id": "viewAnimalDetailsForm",
         "title": "Detalle del Animal",
@@ -93,6 +88,28 @@ export const formMappings = {
             { "name": "especie", "label": "Especie", "type": "text" },
             { "name": "edad", "label": "Edad", "type": "text" }
         ]
+      },
+      {
+        "id": "addHealthRecordForm",
+        "title": "Agregar Registro a Libreta Sanitaria",
+        "endpoint": "POST /animales/:id/historial-clinico",
+        "fields": [
+          { "name": "fecha", "label": "Fecha del Registro", "type": "datetime-local", "required": true },
+          { "name": "tipo", "label": "Tipo de Registro", "type": "select", "options": [
+            { "value": "vacuna", "text": "Vacuna" },
+            { "value": "desparasitacion", "text": "Desparasitación" },
+            { "value": "consulta", "text": "Consulta" },
+            { "value": "cirugia", "text": "Cirugía" },
+            { "value": "otro", "text": "Otro" }
+          ], "required": true },
+          { "name": "descripcion", "label": "Descripción / Detalles", "type": "textarea", "placeholder": "Ej: Vacuna antirrábica, refuerzo anual", "required": true }
+        ]
+      },
+      {
+        "id": "viewAnimalHealthBookForm",
+        "title": "Historial Clínico",
+        "endpoint": "GET /animales/:id/historial-clinico",
+        "confirmationText": "Mostrando el historial clínico del animal. Esta es una vista de solo lectura."
       }
     ]
   },

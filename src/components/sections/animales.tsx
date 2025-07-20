@@ -29,8 +29,8 @@ import { DynamicForm, type FormConfig } from "@/components/forms/dynamic-form"
 import { formMappings } from "@/lib/forms-mapping"
 
 const animals = [
-  { id: 1, name: "Firulais", species: "Perro", raza: "Labrador", age: 5, sexo: "macho", color: "Dorado", tamanio: "grande", esta_castrado: true, owner: "Juan Pérez", patent: "12345" },
-  { id: 2, name: "Mishi", species: "Gato", raza: "Siamés", age: 2, sexo: "hembra", color: "Blanco y negro", tamanio: "pequenio", esta_castrado: false, owner: "Laura Gómez", patent: "54321" },
+  { id: 1, name: "Firulais", species: "Perro", raza: "Labrador", age: 5, sexo: "macho", color: "Dorado", tamanio: "grande", esta_castrado: true, owner: "Juan Pérez", patent: "12345", historial_clinico: [{fecha: "2025-06-20", tipo: "Consulta", descripcion: "Control anual"}, {fecha: "2025-01-15", tipo: "Vacuna", descripcion: "Vacuna antirrábica"}] },
+  { id: 2, name: "Mishi", species: "Gato", raza: "Siamés", age: 2, sexo: "hembra", color: "Blanco y negro", tamanio: "pequenio", esta_castrado: false, owner: "Laura Gómez", patent: "54321", historial_clinico: [] },
 ]
 
 interface AnimalesSectionProps {
@@ -152,7 +152,8 @@ export default function AnimalesSection({ initialFilter }: AnimalesSectionProps)
                   <TableCell className="flex flex-wrap gap-2">
                     <Button size="sm" variant="outline" onClick={() => handleFormOpen('editAnimalForm', animal)}>Editar</Button>
                     <Button size="sm" variant="secondary" onClick={() => handleFormOpen('patentarAnimalForm', animal)}>Patentar</Button>
-                    <Button size="sm" variant="secondary">Libreta</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('viewAnimalHealthBookForm', animal)}>Ver Libreta</Button>
+                    <Button size="sm" variant="secondary" onClick={() => handleFormOpen('addHealthRecordForm', animal)}>Agregar Registro</Button>
                     <Button size="sm" variant="destructive" onClick={() => handleFormOpen('deactivateAnimalForm', animal)}>Baja</Button>
                     <Button size="sm" onClick={() => handleFormOpen('activateAnimalForm', animal)}>Alta</Button>
                     <Button size="sm" variant="ghost" onClick={() => handleFormOpen('assignOwnerForm', animal)}>Propietario</Button>
