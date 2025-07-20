@@ -20,7 +20,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/icons/logo"
 
 interface AppSidebarProps {
@@ -41,15 +44,20 @@ const navItems = [
 ]
 
 export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps) {
+  const { state } = useSidebar()
+
   return (
     <Sidebar className="border-r border-border/80">
-      <SidebarHeader>
+      <SidebarHeader className="flex items-center justify-between">
         <div className="flex items-center gap-2 p-2">
           <Logo className="size-8 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground">
+          <h2 className="text-xl font-semibold text-foreground group-data-[collapsible=icon]:hidden">
             Zoonosis Central
           </h2>
         </div>
+        <SidebarTrigger asChild className="group-data-[collapsible=icon]:hidden">
+          <Button variant="ghost" size="icon" />
+        </SidebarTrigger>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
@@ -59,6 +67,7 @@ export function AppSidebar({ activeSection, setActiveSection }: AppSidebarProps)
                 onClick={() => setActiveSection(item.id)}
                 isActive={activeSection === item.id}
                 className="justify-start"
+                tooltip={item.label}
               >
                 <item.icon className="size-5" />
                 <span>{item.label}</span>
