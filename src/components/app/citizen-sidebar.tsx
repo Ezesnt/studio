@@ -5,8 +5,9 @@ import React from "react"
 import {
   Clock,
   Dog,
-  Home,
   Siren,
+  Bell,
+  UserCog,
 } from "lucide-react"
 
 import {
@@ -28,10 +29,11 @@ interface CitizenSidebarProps {
 }
 
 const navItems = [
-  { id: "mis-animales", label: "Mis Animales", icon: Dog },
-  { id: "mis-turnos", label: "Mis Turnos", icon: Clock },
-  { id: "realizar-denuncia", label: "Realizar Denuncia", icon: Siren },
-  { id: "adopciones", label: "Adopciones", icon: Home },
+  { id: "dashboard", label: "Dashboard", icon: UserCog },
+  { id: "preturnos", label: "Pre-turnos", icon: Clock },
+  { id: "animales", label: "Mis Animales", icon: Dog },
+  { id: "denuncias", label: "Denuncias", icon: Siren },
+  { id: "notificaciones", label: "Notificaciones", icon: Bell },
 ]
 
 export function CitizenSidebar({ activeSection, setActiveSection }: CitizenSidebarProps) {

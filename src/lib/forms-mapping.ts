@@ -70,6 +70,29 @@ export const formMappings = {
         "fields": [
           { "name": "id_propietario", "label": "ID del Usuario Propietario", "type": "number", "placeholder": "Introduce el ID numérico del usuario", "required": true }
         ]
+      },
+      {
+        "id": "agregarAnimalForm",
+        "title": "Agregar Animal",
+        "fields": [
+          { "name": "nombre", "label": "Nombre", "type": "text", "required": true },
+          { "name": "especie", "label": "Especie", "type": "select", "options": [{"value": "perro", "text": "Perro"}, {"value": "gato", "text": "Gato"}, {"value": "ave", "text": "Ave"}], "required": true },
+          { "name": "edad", "label": "Edad (años)", "type": "number", "min": 0, "required": true }
+        ]
+      },
+      {
+        "id": "viewAnimalHealthBookForm",
+        "title": "Libreta Sanitaria",
+        "confirmationText": "Libreta de Firulais: Vacuna antirrábica: 2024-07-10. Desparasitación: 2025-01-15. Último control: 2025-06-20"
+      },
+       {
+        "id": "viewAnimalDetailsForm",
+        "title": "Detalle del Animal",
+        "fields": [
+            { "name": "nombre", "label": "Nombre", "type": "text" },
+            { "name": "especie", "label": "Especie", "type": "text" },
+            { "name": "edad", "label": "Edad", "type": "text" }
+        ]
       }
     ]
   },
@@ -97,6 +120,16 @@ export const formMappings = {
         "title": "Cambiar Estado del Usuario",
         "endpoint": "DELETE /usuarios/:id (para desactivar) o PUT /usuarios/:id/activar (para activar)",
         "confirmationText": "Elige una acción para este usuario. La desactivación es una baja lógica."
+      },
+      {
+        "id": "editCitizenUserForm",
+        "title": "Editar Información",
+        "fields": [
+          { "name": "nombre", "label": "Nombre", "type": "text", "required": true },
+          { "name": "apellido", "label": "Apellido", "type": "text", "required": true },
+          { "name": "email", "label": "Email", "type": "email", "required": true },
+          { "name": "dni", "label": "DNI", "type": "text", "required": true }
+        ]
       }
     ]
   },
@@ -124,6 +157,15 @@ export const formMappings = {
         "fields": [
           { "name": "nuevo_estado", "label": "Nuevo Estado", "type": "select", "options": [{ "value": "pendiente", "text": "Pendiente" }, { "value": "en_proceso", "text": "En Proceso" }, { "value": "resuelto", "text": "Resuelto" }, { "value": "desestimado", "text": "Desestimado" }], "required": true }
         ]
+      },
+      {
+        "id": "agregarDenunciaForm",
+        "title": "Agregar Denuncia",
+        "fields": [
+            { "name": "barrio", "label": "Barrio", "type": "text", "required": true },
+            { "name": "descripcion", "label": "Descripción", "type": "textarea", "required": true },
+            { "name": "fecha", "label": "Fecha", "type": "date", "required": true }
+        ]
       }
     ]
   },
@@ -147,6 +189,14 @@ export const formMappings = {
         "endpoint": "PUT /admin/pre-turnos/:id/cancelar",
         "fields": [
           { "name": "motivo_cancelacion", "label": "Motivo de la cancelación", "type": "textarea", "placeholder": "Explica por qué se cancela el turno...", "required": true }
+        ]
+      },
+      {
+        "id": "solicitarPreturnoForm",
+        "title": "Solicitar Pre-turno",
+        "fields": [
+          { "name": "fecha", "label": "Fecha deseada", "type": "date", "required": true },
+          { "name": "motivo", "label": "Motivo (ej. castración, control)", "type": "textarea", "required": true }
         ]
       }
     ]
