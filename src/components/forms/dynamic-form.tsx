@@ -427,7 +427,9 @@ export function DynamicForm({ formConfig, isOpen, onClose, item }: DynamicFormPr
                 {renderAttachments()}
 
                 <DialogFooter className="pt-4">
-                  <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
+                  <Button type="button" variant="ghost" onClick={onClose}>
+                    {isReadOnlyForm ? "Cerrar" : "Cancelar"}
+                  </Button>
                   {!isReadOnlyForm && <Button type="submit">Guardar</Button>}
                 </DialogFooter>
               </form>
