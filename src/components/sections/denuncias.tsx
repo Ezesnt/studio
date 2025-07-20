@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from "react"
@@ -49,16 +50,16 @@ export default function DenunciasSection() {
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🚨 Denuncias</h1>
       
-      <div className="flex gap-2">
-        <Input type="text" placeholder="Buscar denuncia..." className="flex-grow" />
-        <CollapsibleTrigger asChild>
-          <Button variant="outline" onClick={() => setIsOpen(!isOpen)}>
-            Filtrar
-          </Button>
-        </CollapsibleTrigger>
-      </div>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
+        <div className="flex gap-2">
+          <Input type="text" placeholder="Buscar denuncia..." className="flex-grow" />
+          <CollapsibleTrigger asChild>
+            <Button variant="outline">
+              Filtrar
+            </Button>
+          </CollapsibleTrigger>
+        </div>
 
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleContent>
           <Card className="mb-4">
             <CardContent className="pt-6">
