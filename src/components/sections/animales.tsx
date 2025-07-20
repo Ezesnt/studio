@@ -38,20 +38,20 @@ export default function AnimalesSection() {
     <div className="space-y-6">
       <h1 className="flex items-center gap-3">🐾 Animales</h1>
 
-      <div className="flex gap-2">
-        <Input
-          type="text"
-          placeholder="Buscar animal por nombre, especie, propietario..."
-          className="flex-grow"
-        />
-        <CollapsibleTrigger asChild>
-          <Button variant="outline" onClick={() => setIsOpen(!isOpen)}>
-            Filtrar
-          </Button>
-        </CollapsibleTrigger>
-      </div>
-
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="space-y-2">
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            placeholder="Buscar animal por nombre, especie, propietario..."
+            className="flex-grow"
+          />
+          <CollapsibleTrigger asChild>
+            <Button variant="outline">
+              Filtrar
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+        
         <CollapsibleContent>
           <Card className="mb-4">
             <CardContent className="pt-6">
